@@ -1,0 +1,10 @@
+/vendor/
+/var/
+.env
+.env.local
+.env.*.local
+/public/build/
+/public/bundles/
+.idea/
+.vscode/
+docker-compose.override.yml
