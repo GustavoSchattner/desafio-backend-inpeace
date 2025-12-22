@@ -18,3 +18,5 @@ docker-compose.override.yml
 ###> phpstan/phpstan ###
 phpstan.neon
 ###< phpstan/phpstan ###
+.phpunit.cache/
+public/uploads/

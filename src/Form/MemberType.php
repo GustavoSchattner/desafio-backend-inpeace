@@ -17,23 +17,35 @@ class MemberType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, ['label' => 'Nome Completo'])
-            ->add('cpf', TextType::class, ['label' => 'CPF'])
-            ->add('birthDate', DateType::class, [
+            ->add('name', null, [
+                'label' => 'Nome Completo',
+                'attr' => ['placeholder' => 'Digite seu Nome']
+            ])            
+            ->add('cpf', null, [
+                'label' => 'CPF',
+                'attr' => ['class' => 'cpf-mask', 'placeholder' => '000.000.000-00']
+            ])
+            ->add('birthDate', null, [
                 'widget' => 'single_text',
                 'label' => 'Data de Nascimento'
             ])
             ->add('email', EmailType::class, ['label' => 'E-mail'])
             ->add('phone', TextType::class, ['label' => 'Telefone'])
-            ->add('address', TextType::class, ['label' => 'Logradouro'])
-
             ->add('state', TextType::class, [
                 'label' => 'Estado (UF)',
-                'attr' => ['maxlength' => 2]
+                'attr' => [
+                    'class' => 'js-state-input d-none',
+                    'readonly' => true 
+                ]
             ])
-            ->add('city', TextType::class, ['label' => 'Cidade'])
-
-            // Select de Igrejas
+            ->add('city', TextType::class, [
+                'label' => 'Cidade',
+                'attr' => [
+                    'class' => 'js-city-input d-none', 
+                    'readonly' => true
+                ]
+            ])
+            ->add('address', null, ['label' => 'Logradouro'])
             ->add('church', EntityType::class, [
                 'class' => Church::class,
                 'choice_label' => 'name',
