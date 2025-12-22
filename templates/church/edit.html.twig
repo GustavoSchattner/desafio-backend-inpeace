@@ -1,15 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Church{% endblock %}
+{% block title %}Editar Igreja{% endblock %}
 
 {% block body %}
-    <h1>Edit Church</h1>
+<div class="container mt-4">
+    <h1>Editar Igreja</h1>
 
-    {{ include('church/_form.html.twig') }}
+    {{ include('church/_form.html.twig', {'button_label': 'Atualizar'}) }}
 
-    <a href="{{ path('app_church_index') }}">back to list</a>
+    <div class="mt-3 d-flex justify-content-between align-items-center">
+        <a href="{{ path('app_church_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar para a lista
+        </a>
 
-    {{ include('church/_delete_form.html.twig') }}
+        {{ include('church/_delete_form.html.twig') }}
+    </div>
+</div>
 {% endblock %}
-
-

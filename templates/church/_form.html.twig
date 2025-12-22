@@ -1,27 +1,29 @@
 {{ form_start(form) }}
     {{ form_errors(form) }}
 
-    {{ form_row(form.name) }}
-    {{ form_row(form.address) }}
-    {{ form_row(form.website) }}
+    {{ form_row(form.name, {label: 'Nome da Igreja'}) }}
+    {{ form_row(form.address, {label: 'Endereço'}) }}
+    {{ form_row(form.website, {label: 'Site'}) }}
 
     <div class="mb-3">
         {% if church.image %}
-            <div class="mb-2">
-                <label class="form-label d-block">Imagem Atual:</label>
-                <img src="{{ asset('uploads/churches/' ~ church.image) }}" 
-                     alt="Imagem da Igreja" 
-                     style="max-width: 200px; height: auto; border-radius: 8px; border: 1px solid #ddd; padding: 5px;">
-                <div class="form-text text-muted small">
+            <div class="card mb-3" style="max-width: 300px;">
+                <div class="card-header small text-muted">Imagem Atual</div>
+                <div class="card-body p-2 text-center">
+                    <img src="{{ asset('uploads/churches/' ~ church.image) }}" 
+                         alt="Imagem da Igreja" 
+                         class="img-fluid rounded">
+                </div>
+                <div class="card-footer text-muted small">
                     Deixe o campo abaixo vazio para manter esta imagem.
                 </div>
             </div>
         {% endif %}
 
-        {{ form_row(form.image) }}
+        {{ form_row(form.image, {label: 'Upload de Imagem'}) }}
     </div>
 
-    <div style="margin-top: 20px;">
-        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    <div class="mt-4">
+        <button class="btn btn-primary">{{ button_label|default('Salvar') }}</button>
     </div>
 {{ form_end(form) }}
