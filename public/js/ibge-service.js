@@ -1,91 +1,101 @@
-function initIbge() {
-    const stateInput = document.querySelector('.js-state-input');
-    const cityInput = document.querySelector('.js-city-input');
-    
-    if (!stateInput || !cityInput) return;
+/**
+ * Serviço IBGE - Versão Turbo-Proof
+ * Este script roda toda vez que é injetado no DOM pelo formulário.
+ */
 
-    if (stateInput.parentNode.querySelector('select.js-ibge-select')) return;
+(function() {
+    const runIbgeService = () => {
+        const stateInput = document.querySelector('.js-state-input');
+        const cityInput = document.querySelector('.js-city-input');
 
-    const stateSelect = document.createElement('select');
-    stateSelect.className = 'form-select mb-3 js-ibge-select';
-    stateSelect.innerHTML = '<option value="">Carregando estados...</option>';
-    
-    const citySelect = document.createElement('select');
-    citySelect.className = 'form-select mb-3 js-ibge-select';
-    citySelect.innerHTML = '<option value="">Selecione um estado primeiro</option>';
-    citySelect.disabled = true;
+        if (!stateInput || !cityInput) return;
 
-    stateInput.parentNode.insertBefore(stateSelect, stateInput);
-    cityInput.parentNode.insertBefore(citySelect, cityInput);
+        if (stateInput.parentNode.querySelector('select.js-ibge-select')) return;
 
-    const API_BASE = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
+        stateInput.style.display = 'none';
+        cityInput.style.display = 'none';
 
-    const fetchCities = (ufId, selectedCityName = null) => {
-        citySelect.innerHTML = '<option value="">Carregando...</option>';
+        const stateSelect = document.createElement('select');
+        stateSelect.className = 'form-select mb-3 js-ibge-select';
+        stateSelect.innerHTML = '<option value="">Carregando estados...</option>';
+        
+        const citySelect = document.createElement('select');
+        citySelect.className = 'form-select mb-3 js-ibge-select';
+        citySelect.innerHTML = '<option value="">Selecione um estado primeiro</option>';
         citySelect.disabled = true;
 
-        fetch(`${API_BASE}/${ufId}/municipios`)
-            .then(res => res.json())
-            .then(cities => {
-                citySelect.innerHTML = '<option value="">Selecione a Cidade</option>';
-                cities.forEach(city => {
-                    const option = document.createElement('option');
-                    option.value = city.nome;
-                    option.textContent = city.nome;
-                    citySelect.appendChild(option);
-                });
-                citySelect.disabled = false;
+        stateInput.parentNode.insertBefore(stateSelect, stateInput);
+        cityInput.parentNode.insertBefore(citySelect, cityInput);
 
-                if (selectedCityName) {
-                    citySelect.value = selectedCityName;
-                    cityInput.value = selectedCityName;
+        const API_BASE = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
+
+        const fetchCities = (ufId, selectedCityName = null) => {
+            citySelect.innerHTML = '<option value="">Carregando...</option>';
+            citySelect.disabled = true;
+
+            fetch(`${API_BASE}/${ufId}/municipios`)
+                .then(res => res.json())
+                .then(cities => {
+                    citySelect.innerHTML = '<option value="">Selecione a Cidade</option>';
+                    cities.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.nome;
+                        option.textContent = city.nome;
+                        citySelect.appendChild(option);
+                    });
+                    citySelect.disabled = false;
+
+                    if (selectedCityName) {
+                        citySelect.value = selectedCityName;
+                        cityInput.value = selectedCityName;
+                    }
+                })
+                .catch(err => console.error('Erro ao buscar cidades:', err));
+        };
+
+        fetch(`${API_BASE}?orderBy=nome`)
+            .then(response => response.json())
+            .then(states => {
+                stateSelect.innerHTML = '<option value="">Selecione o Estado</option>';
+                states.forEach(uf => {
+                    const option = document.createElement('option');
+                    option.value = uf.sigla; 
+                    option.dataset.id = uf.id; 
+                    option.textContent = `${uf.nome} (${uf.sigla})`;
+                    stateSelect.appendChild(option);
+                });
+
+                if (stateInput.value) {
+                    stateSelect.value = stateInput.value;
+                    const selectedOption = [...stateSelect.options].find(opt => opt.value === stateInput.value);
+                    
+                    if (selectedOption) {
+                        fetchCities(selectedOption.dataset.id, cityInput.value);
+                    }
                 }
             })
-            .catch(err => console.error('Erro ao buscar cidades:', err));
+            .catch(console.error);
+
+        stateSelect.addEventListener('change', function() {
+            stateInput.value = this.value;
+            cityInput.value = ''; 
+            citySelect.value = '';
+
+            const selectedOption = this.options[this.selectedIndex];
+            
+            if (selectedOption && selectedOption.dataset.id) {
+                fetchCities(selectedOption.dataset.id);
+            } else {
+                citySelect.innerHTML = '<option value="">Selecione um estado primeiro</option>';
+                citySelect.disabled = true;
+            }
+        });
+
+        citySelect.addEventListener('change', function() {
+            cityInput.value = this.value;
+        });
     };
 
-    fetch(`${API_BASE}?orderBy=nome`)
-        .then(response => response.json())
-        .then(states => {
-            stateSelect.innerHTML = '<option value="">Selecione o Estado</option>';
-            states.forEach(uf => {
-                const option = document.createElement('option');
-                option.value = uf.sigla; 
-                option.dataset.id = uf.id; 
-                option.textContent = `${uf.nome} (${uf.sigla})`;
-                stateSelect.appendChild(option);
-            });
+    setTimeout(runIbgeService, 50);
 
-            if (stateInput.value) {
-                stateSelect.value = stateInput.value;
-                
-                const selectedOption = [...stateSelect.options].find(opt => opt.value === stateInput.value);
-                if (selectedOption) {
-                    fetchCities(selectedOption.dataset.id, cityInput.value);
-                }
-            }
-        })
-        .catch(err => console.error('Erro ao carregar estados do IBGE:', err));
-
-    stateSelect.addEventListener('change', function() {
-        stateInput.value = this.value;
-        cityInput.value = ''; 
-
-        const selectedOption = this.options[this.selectedIndex];
-        const ufId = selectedOption.dataset.id;
-
-        if (ufId) {
-            fetchCities(ufId);
-        } else {
-            citySelect.innerHTML = '<option value="">Selecione um estado primeiro</option>';
-            citySelect.disabled = true;
-        }
-    });
-
-    citySelect.addEventListener('change', function() {
-        cityInput.value = this.value;
-    });
-}
-
-document.addEventListener('turbo:load', initIbge);
-document.addEventListener('DOMContentLoaded', initIbge);
+})();
