@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\MemberRepository;
+use App\Validator as AppAssert;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -22,46 +23,46 @@ class Member
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "O nome é obrigatório.")]
-    #[Assert\Length(min: 3, minMessage: "O nome deve ter pelo menos 3 caracteres.")]
+    #[Assert\NotBlank(message: 'O nome é obrigatório.')]
+    #[Assert\Length(min: 3, minMessage: 'O nome deve ter pelo menos 3 caracteres.')]
     private ?string $name = null;
 
     #[ORM\Column(length: 14)]
-    #[Assert\NotBlank(message: "O CPF é obrigatório.")]
-    #[Assert\Regex(pattern: "/^\d{3}\.\d{3}\.\d{3}\-\d{2}$/", message: "O CPF deve estar no formato 000.000.000-00")]
+    #[Assert\NotBlank(message: 'O CPF é obrigatório.')]
+    #[AppAssert\Cpf]
     private ?string $cpf = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Assert\NotNull(message: "A data de nascimento é obrigatória.")]
-    #[Assert\LessThan("today", message: "A data deve ser no passado.")]
+    #[Assert\NotNull(message: 'A data de nascimento é obrigatória.')]
+    #[Assert\LessThan('today', message: 'A data deve ser no passado.')]
     private ?\DateTimeInterface $birthDate = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "O e-mail é obrigatório.")]
-    #[Assert\Email(message: "O e-mail {{ value }} não é válido.")]
+    #[Assert\NotBlank(message: 'O e-mail é obrigatório.')]
+    #[Assert\Email(message: 'O e-mail {{ value }} não é válido.')]
     private ?string $email = null;
 
     #[ORM\Column(length: 20)]
-    #[Assert\NotBlank(message: "O telefone é obrigatório.")]
-    #[Assert\Length(min: 10, minMessage: "Telefone incompleto.")]
+    #[Assert\NotBlank(message: 'O telefone é obrigatório.')]
+    #[Assert\Length(min: 10, minMessage: 'Telefone incompleto.')]
     private ?string $phone = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "O logradouro é obrigatório.")]
+    #[Assert\NotBlank(message: 'O logradouro é obrigatório.')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "A cidade é obrigatória.")]
+    #[Assert\NotBlank(message: 'A cidade é obrigatória.')]
     private ?string $city = null;
 
     #[ORM\Column(length: 2)]
-    #[Assert\NotBlank(message: "O estado (UF) é obrigatório.")]
-    #[Assert\Length(min: 2, max: 2, exactMessage: "Use a sigla do estado com 2 letras (Ex: ES).")]
+    #[Assert\NotBlank(message: 'O estado (UF) é obrigatório.')]
+    #[Assert\Length(min: 2, max: 2, exactMessage: 'Use a sigla do estado com 2 letras (Ex: ES).')]
     private ?string $state = null;
 
     #[ORM\ManyToOne(inversedBy: 'members')]
     #[ORM\JoinColumn(nullable: true)]
-    #[Assert\NotNull(message: "Você precisa selecionar uma Igreja.")]
+    #[Assert\NotNull(message: 'Você precisa selecionar uma Igreja.')]
     private ?Church $church = null;
 
     public function getId(): ?int

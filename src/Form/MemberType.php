@@ -18,31 +18,29 @@ class MemberType extends AbstractType
         $builder
             ->add('name', null, [
                 'label' => 'Nome Completo',
-                'attr' => ['placeholder' => 'Digite seu Nome']
+                'attr' => ['placeholder' => 'Digite seu Nome'],
             ])
             ->add('cpf', null, [
                 'label' => 'CPF',
-                'attr' => ['class' => 'cpf-mask', 'placeholder' => '000.000.000-00']
+                'attr' => [
+                    'class' => 'js-cpf',
+                    'placeholder' => '000.000.000-00',
+                    'maxlength' => 14,
+                ],
             ])
             ->add('birthDate', null, [
                 'widget' => 'single_text',
-                'label' => 'Data de Nascimento'
+                'label' => 'Data de Nascimento',
             ])
             ->add('email', EmailType::class, ['label' => 'E-mail'])
             ->add('phone', TextType::class, ['label' => 'Telefone'])
             ->add('state', TextType::class, [
-                'label' => 'Estado (UF)',
-                'attr' => [
-                    'class' => 'js-state-input d-none',
-                    'readonly' => true
-                ]
+                'label' => 'Estado',
+                'attr' => ['class' => 'js-state-input'],
             ])
             ->add('city', TextType::class, [
                 'label' => 'Cidade',
-                'attr' => [
-                    'class' => 'js-city-input d-none',
-                    'readonly' => true
-                ]
+                'attr' => ['class' => 'js-city-input'],
             ])
             ->add('address', null, ['label' => 'Logradouro'])
             ->add('church', EntityType::class, [
