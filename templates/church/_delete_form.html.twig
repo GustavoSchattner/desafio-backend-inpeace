@@ -1,10 +1,10 @@
-<form method="post" action="{{ path('app_church_delete_complex', {'id': church.id}) }}" onsubmit="return confirm('Tem certeza que deseja excluir? \n\nATENÇÃO: Como você está nesta tela simplificada, a exclusão será TOTAL (Igreja + Membros).\n\nPara opções avançadas (como manter os membros), use a página de Listagem.');">
+<form method="post" action="{{ path('app_church_delete', {'id': church.id}) }}" onsubmit="return confirm('Tem certeza que deseja excluir? \n\nATENÇÃO: Como você está nesta tela simplificada, a exclusão será TOTAL (Igreja + Membros).\n\nPara opções avançadas (como mover os membros), use a página de Listagem.');">
     
     <input type="hidden" name="_token" value="{{ csrf_token('delete_generic') }}">
     
-    <input type="hidden" name="delete_action" value="cascade">
+    <input type="hidden" name="move_to_church" value="cascade_delete">
     
-    <button class="btn btn-danger">
+    <button class="btn btn-outline-danger">
         <i class="bi bi-trash"></i> Deletar Igreja
     </button>
 </form>

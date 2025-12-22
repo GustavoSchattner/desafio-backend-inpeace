@@ -54,16 +54,17 @@
                             <td class="text-end">
                                 <div class="btn-group">
                                     <a href="{{ path('app_church_show', {'id': church.id}) }}" class="btn btn-sm btn-outline-info"><i class="bi bi-eye"></i></a>
-                                    <a href="{{ path('app_church_edit', {'id': church.id}) }}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>
+                                    <a href="{{ path('app_church_edit', {'id': church.id}) }}" class="btn btn-sm btn-outline-warning"><i class="bi bi-pencil"></i></a>                                
                                     
                                     <button type="button" 
-                                            class="btn btn-sm btn-outline-danger" 
+                                            class="btn btn-sm btn-danger js-delete-btn"
                                             data-bs-toggle="modal" 
                                             data-bs-target="#deleteModal"
-                                            data-url="{{ path('app_church_delete_complex', {'id': church.id}) }}"
+                                            data-id="{{ church.id }}"
                                             data-name="{{ church.name }}"
-                                            data-members="{{ church.members|length }}">
-                                        <i class="bi bi-trash"></i>
+                                            data-members-count="{{ church.members|length }}" 
+                                            data-url="{{ path('app_church_delete', {'id': church.id}) }}">
+                                            Excluir
                                     </button>
                                 </div>
                             </td>
@@ -75,6 +76,7 @@
                 </table>
             </div>
         </div>
+        
         <div class="d-flex justify-content-center mt-4">
             {{ knp_pagination_render(pagination) }}
         </div>
@@ -87,56 +89,36 @@
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Excluir Igreja</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
                 <form method="post" id="deleteForm">
-                    
-                    <div class="modal-header bg-danger text-white">
-                        <h5 class="modal-title"><i class="bi bi-exclamation-triangle-fill"></i> Exclusir Igreja</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                    </div>
-                    
                     <div class="modal-body">
-                        <p class="lead">Você vai remover a igreja: <strong id="modalChurchName"></strong></p>
+                        <p>Você tem certeza que deseja remover a igreja: <strong id="modalChurchName">...</strong>?</p>
                         
-                        <div id="hasMembersBlock" class="d-none">
-                            <div class="alert alert-warning border-warning">
-                                <h6 class="alert-heading fw-bold">Atenção!</h6>
-                                <p class="mb-0">Existem <strong id="modalMemberCount"></strong> membros nesta igreja.</p>
-                                <hr>
-                                <p class="mb-0 small">O que deseja fazer com eles?</p>
-                            </div>
-
-                            <div class="d-grid gap-2">
-                                <div class="form-check border p-3 rounded mb-2 shadow-sm">
-                                    <input class="form-check-input" type="radio" name="delete_action" value="orphans" checked>
-                                    <label class="form-check-label w-100">
-                                        <strong><i class="bi bi-people"></i> Manter membros (Despatriar)</strong>
-                                        <div class="text-muted small mt-1">Os membros continuam no sistema, sem vínculo.</div>
-                                    </label>
-                                </div>
-                                <div class="form-check border p-3 rounded bg-light">
-                                    <input class="form-check-input" type="radio" name="delete_action" value="cascade">
-                                    <label class="form-check-label text-danger w-100">
-                                        <strong><i class="bi bi-trash-fill"></i> Apagar membros também</strong>
-                                        <div class="text-muted small mt-1">A igreja e TODOS os membros serão apagados.</div>
-                                    </label>
-                                </div>
+                        <div id="modalMemberWarning" class="alert alert-warning d-none">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Esta igreja possui <strong id="modalMemberCount">0</strong> membros vinculados.
+                            <div class="mt-3">
+                                <label class="form-label">O que fazer com eles?</label>
+                                <select name="move_to_church" id="targetChurchSelect" class="form-select">
+                                    <option value="">Deixar sem igreja</option>
+                                    <option value="cascade_delete" class="text-danger fw-bold">
+                                          Excluir membros também (Cascata)
+                                    </option>
+                                    {% for c in allChurches %}
+                                        <option value="{{ c.id }}" class="church-option">{{ c.name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                         </div>
-
-
-                        <div id="noMembersBlock" class="d-none">
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle"></i> Não há membros vinculados. Exclusão segura.
-                            </div>
-                            <input type="hidden" name="delete_action" value="cascade">
-                        </div>
-
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete_generic') }}"> 
+                        
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_generic') }}">
                     </div>
-                    
-                    <div class="modal-footer bg-light">
+                    <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger">Confirmar</button>
+                        <button type="submit" class="btn btn-danger">Sim, Excluir</button>
                     </div>
                 </form>
             </div>
@@ -146,35 +128,53 @@
 
 {% block page_scripts %}
 <script>
-    const deleteModal = document.getElementById('deleteModal')
-    deleteModal.addEventListener('show.bs.modal', event => {
-        const button = event.relatedTarget
+    function initDeleteModal() {
+        const deleteModalEl = document.getElementById('deleteModal');
+        if (!deleteModalEl) return;
+
+        deleteModalEl.removeEventListener('show.bs.modal', handleModalShow);
+        deleteModalEl.addEventListener('show.bs.modal', handleModalShow);
+    }
+
+    function handleModalShow(event) {
+        const button = event.relatedTarget;
         
-        const url = button.getAttribute('data-url')
-        const name = button.getAttribute('data-name')
-        const members = parseInt(button.getAttribute('data-members'))
+        const url = button.getAttribute('data-url');
+        const name = button.getAttribute('data-name');
+        const currentChurchId = button.getAttribute('data-id'); 
+        const members = parseInt(button.getAttribute('data-members-count') || 0);
 
-        const modalTitle = document.getElementById('modalChurchName')
-        const modalMemberCount = document.getElementById('modalMemberCount')
-        const hasMembersBlock = document.getElementById('hasMembersBlock')
-        const noMembersBlock = document.getElementById('noMembersBlock')
-        const form = document.getElementById('deleteForm')
+        const modalTitle = document.getElementById('modalChurchName');
+        const modalMemberCount = document.getElementById('modalMemberCount');
+        const warningBlock = document.getElementById('modalMemberWarning');
+        const form = document.getElementById('deleteForm');
+        
+        const targetSelect = document.getElementById('targetChurchSelect');
 
-        form.action = url
-        modalTitle.textContent = name
-        modalMemberCount.textContent = members
+        form.action = url;
+        modalTitle.textContent = name;
+        
+        targetSelect.value = "";
 
+        Array.from(targetSelect.options).forEach(option => {
+            if (option.value === currentChurchId) {
+                option.hidden = true;
+                option.disabled = true;
+            } else {
+                option.hidden = false;
+                option.disabled = false;
+            }
+        });
+        
         if (members > 0) {
-            hasMembersBlock.classList.remove('d-none')
-            noMembersBlock.classList.add('d-none')
-            const hiddenInput = noMembersBlock.querySelector('input');
-            if(hiddenInput) hiddenInput.disabled = true;
+            modalMemberCount.textContent = members;
+            warningBlock.classList.remove('d-none');
         } else {
-            hasMembersBlock.classList.add('d-none')
-            noMembersBlock.classList.remove('d-none')
-            const hiddenInput = noMembersBlock.querySelector('input');
-            if(hiddenInput) hiddenInput.disabled = false;
+            warningBlock.classList.add('d-none');
         }
-    })
+    }
+
+    document.addEventListener('turbo:load', initDeleteModal);
+    document.addEventListener('DOMContentLoaded', initDeleteModal);
 </script>
 {% endblock %}
