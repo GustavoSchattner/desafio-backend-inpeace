@@ -6,22 +6,36 @@ use App\Repository\ChurchRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ChurchRepository::class)]
-class Church
+#[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: false)]
+class Church implements \Stringable
 {
+    use SoftDeleteableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "O nome da igreja é obrigatório.")]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: "O nome deve ter pelo menos {{ limit }} caracteres."
+    )]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "O endereço é obrigatório.")]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(message: "O site deve ser uma URL válida.")]
     private ?string $website = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -36,6 +50,11 @@ class Church
     public function __construct()
     {
         $this->members = new ArrayCollection();
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? 'Nova Igreja';
     }
 
     public function getId(): ?int
@@ -72,7 +91,7 @@ class Church
         return $this->website;
     }
 
-    public function setWebsite(string $website): static
+    public function setWebsite(?string $website): static
     {
         $this->website = $website;
 
@@ -111,13 +130,20 @@ class Church
 
     public function removeMember(Member $member): static
     {
-        if ($this->members->removeElement($member)) {
-            // set the owning side to null (unless already changed)
-            if ($member->getChurch() === $this) {
-                $member->setChurch(null);
-            }
+        if ($this->members->removeElement($member) && $member->getChurch() === $this) {
+            $member->setChurch(null);
         }
 
         return $this;
+    }
+
+    public function getMembersCount(): int
+    {
+        return $this->members->count();
+    }
+
+    public function getImagePath(): ?string
+    {
+        return $this->image ? '/uploads/churches/' . $this->image : null;
     }
 }
