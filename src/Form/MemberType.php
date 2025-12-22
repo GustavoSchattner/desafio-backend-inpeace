@@ -6,7 +6,6 @@ use App\Entity\Church;
 use App\Entity\Member;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,7 +19,7 @@ class MemberType extends AbstractType
             ->add('name', null, [
                 'label' => 'Nome Completo',
                 'attr' => ['placeholder' => 'Digite seu Nome']
-            ])            
+            ])
             ->add('cpf', null, [
                 'label' => 'CPF',
                 'attr' => ['class' => 'cpf-mask', 'placeholder' => '000.000.000-00']
@@ -35,13 +34,13 @@ class MemberType extends AbstractType
                 'label' => 'Estado (UF)',
                 'attr' => [
                     'class' => 'js-state-input d-none',
-                    'readonly' => true 
+                    'readonly' => true
                 ]
             ])
             ->add('city', TextType::class, [
                 'label' => 'Cidade',
                 'attr' => [
-                    'class' => 'js-city-input d-none', 
+                    'class' => 'js-city-input d-none',
                     'readonly' => true
                 ]
             ])
