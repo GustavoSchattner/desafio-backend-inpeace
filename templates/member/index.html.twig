@@ -1,49 +1,68 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Member index{% endblock %}
+{% block title %}Listagem de Membros{% endblock %}
 
 {% block body %}
-    <h1>Member index</h1>
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>Membros</h1>
+            <a href="{{ path('app_member_new') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill"></i> Novo Membro
+            </a>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Cpf</th>
-                <th>BirthDate</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Address</th>
-                <th>City</th>
-                <th>State</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for member in members %}
-            <tr>
-                <td>{{ member.id }}</td>
-                <td>{{ member.name }}</td>
-                <td>{{ member.cpf }}</td>
-                <td>{{ member.birthDate ? member.birthDate|date('Y-m-d') : '' }}</td>
-                <td>{{ member.email }}</td>
-                <td>{{ member.phone }}</td>
-                <td>{{ member.address }}</td>
-                <td>{{ member.city }}</td>
-                <td>{{ member.state }}</td>
-                <td>
-                    <a href="{{ path('app_member_show', {'id': member.id}) }}">show</a>
-                    <a href="{{ path('app_member_edit', {'id': member.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="10">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                <table class="table table-striped table-hover mb-0 align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Email</th>
+                            <th>Telefone</th>
+                            <th>Igreja</th>
+                            <th class="text-end">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for member in pagination %}
+                        <tr>
+                            <td>{{ member.id }}</td>
+                            <td><strong>{{ member.name }}</strong></td>
+                            <td>{{ member.cpf }}</td>
+                            <td>{{ member.email }}</td>
+                            <td>{{ member.phone }}</td>
+                            <td>
+                                {% if member.church %}
+                                    <span class="badge bg-primary">{{ member.church.name }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Sem Igreja</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group">
+                                    <a href="{{ path('app_member_show', {'id': member.id}) }}" class="btn btn-sm btn-outline-info" title="Ver"><i class="bi bi-eye"></i></a>
+                                    <a href="{{ path('app_member_edit', {'id': member.id}) }}" class="btn btn-sm btn-outline-warning" title="Editar"><i class="bi bi-pencil"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="7" class="text-center py-4 text-muted">Nenhum membro encontrado.</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <a href="{{ path('app_member_new') }}">Create new</a>
+        <div class="d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(pagination) }}
+        </div>
+        
+        <div class="text-center text-muted small pb-4">
+            Total de membros: {{ pagination.getTotalItemCount }}
+        </div>
+    </div>
 {% endblock %}

@@ -6,6 +6,7 @@ use App\Entity\Member;
 use App\Form\MemberType;
 use App\Repository\MemberRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,14 +15,27 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/member')]
 final class MemberController extends AbstractController
 {
-    #[Route(name: 'app_member_index', methods: ['GET'])]
-    public function index(MemberRepository $memberRepository): Response
-    {
+    #[Route('/', name: 'app_member_index', methods: ['GET'])]
+    public function index(
+        MemberRepository $memberRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        // 1. Pega a query otimizada com JOIN
+        $query = $memberRepository->getPaginationQuery();
+
+        // 2. Pagina
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10 // Limite por página
+        );
+
+        // 3. Renderiza passando 'pagination'
         return $this->render('member/index.html.twig', [
-            'members' => $memberRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
-
     #[Route('/new', name: 'app_member_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

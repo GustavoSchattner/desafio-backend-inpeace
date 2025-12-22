@@ -84,4 +84,13 @@ class MemberRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getPaginationQuery(): \Doctrine\ORM\Query
+    {
+        return $this->createQueryBuilder('m')
+            ->leftJoin('m.church', 'c')
+            ->addSelect('c')
+            ->orderBy('m.name', 'ASC')
+            ->getQuery();
+    }
 }
