@@ -30,14 +30,12 @@ final class ChurchControllerTest extends WebTestCase
 
     public function testIndex(): void
     {
-        $this->client->followRedirects();
         $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Church index');
+        
+        self::assertPageTitleContains('Listagem de Igrejas');
 
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());
     }
 
     public function testNew(): void
@@ -76,7 +74,6 @@ final class ChurchControllerTest extends WebTestCase
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Church');
 
-        // Use assertions to check that the properties are properly displayed.
     }
 
     public function testEdit(): void

@@ -1,7 +1,4 @@
-version: '3.8'
-
 services:
-  # Aplicação PHP-FPM
   app:
     build:
       context: .
@@ -18,7 +15,6 @@ services:
     networks:
       - symfony-network
 
-  # Servidor Web Nginx
   nginx:
     image: nginx:alpine
     container_name: symfony-nginx
@@ -33,7 +29,6 @@ services:
     networks:
       - symfony-network
 
-  # Banco de Dados MySQL
   db:
     image: mysql:8.0
     container_name: symfony-db
@@ -44,7 +39,7 @@ services:
       MYSQL_PASSWORD: root
       MYSQL_USER: user
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - dbdata:/var/lib/mysql
     networks:
