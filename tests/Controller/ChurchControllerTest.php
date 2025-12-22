@@ -3,143 +3,115 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Church;
+use App\Repository\ChurchRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ChurchControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
-
-    private \App\Repository\ChurchRepository $churchRepository;
-
+    private ChurchRepository $repository;
+    private EntityManagerInterface $entityManager;
     private string $path = '/church/';
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
-        $this->churchRepository = static::getContainer()->get(\App\Repository\ChurchRepository::class);
+        $container = static::getContainer();
+        $this->repository = $container->get(ChurchRepository::class);
+        $this->entityManager = $container->get(EntityManagerInterface::class);
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Member')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Church')->execute();
+    }
 
-        foreach ($this->churchRepository->findAll() as $object) {
-            $this->churchRepository->remove($object, true);
-        }
+    private function createChurch(string $name = 'Igreja Matriz'): Church
+    {
+        $church = new Church();
+        $church->setName($name);
+        $church->setAddress('Rua Principal, 100');
+        
+        $this->entityManager->persist($church);
+        $this->entityManager->flush();
+
+        return $church;
     }
 
     public function testIndex(): void
     {
-        $this->client->request('GET', $this->path);
+        $this->createChurch('Igreja A');
+        $this->createChurch('Igreja B');
+
+        $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-
         self::assertPageTitleContains('Listagem de Igrejas');
+        
+        self::assertAnySelectorTextContains('table', 'Igreja A');
+        self::assertAnySelectorTextContains('table', 'Igreja B');
     }
 
     public function testNew(): void
     {
-        $this->markTestIncomplete();
-        /*
-        $originalNumObjectsInRepository = count($this->churchRepository->findAll());
-
-        $this->client->request('GET', sprintf('%snew', $this->path));
-
+        $crawler = $this->client->request('GET', $this->path . 'new');
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
-            'church[name]' => 'Testing',
-            'church[address]' => 'Testing',
-            'church[city]' => 'Testing',
-            'church[state]' => 'Testing',
-            'church[phone]' => 'Testing',
-            'church[denomination]' => 'Testing',
-            'church[website]' => 'Testing',
+        $form = $crawler->selectButton('Salvar')->form([
+            'church[name]' => 'Nova Igreja Teste',
+            'church[address]' => 'Av. Teste, 999',
         ]);
 
-        self::assertResponseRedirects('/church/');
-        self::assertSame($originalNumObjectsInRepository + 1, count($this->churchRepository->findAll()));
-        */
+        $this->client->submit($form);
+
+        self::assertResponseRedirects($this->path);
+
+        $church = $this->repository->findOneBy(['name' => 'Nova Igreja Teste']);
+        self::assertNotNull($church);
+        self::assertSame('Av. Teste, 999', $church->getAddress());
     }
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
-        /*
-        $fixture = new Church();
-        $fixture->setName('My Title');
-        $fixture->setAddress('My Title');
-        $fixture->setCity('My Title');
-        $fixture->setState('My Title');
-        $fixture->setPhone('My Title');
-        $fixture->setDenomination('My Title');
-        $fixture->setWebsite('My Title');
-        $fixture->setCreatedAt(new \DateTimeImmutable());
-        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $church = $this->createChurch();
 
-        $this->churchRepository->save($fixture, true);
-
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', $this->path . $church->getId());
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Church');
-        */
+        self::assertPageTitleContains('Church'); 
+        self::assertSelectorTextContains('body', $church->getName());
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
-        /*
-        $fixture = new Church();
-        $fixture->setName('My Title');
-        $fixture->setAddress('My Title');
-        $fixture->setCity('My Title');
-        $fixture->setState('My Title');
-        $fixture->setPhone('My Title');
-        $fixture->setDenomination('My Title');
-        $fixture->setWebsite('My Title');
-        $fixture->setCreatedAt(new \DateTimeImmutable());
-        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $church = $this->createChurch('Igreja Antiga');
 
-        $this->churchRepository->save($fixture, true);
+        $crawler = $this->client->request('GET', $this->path . $church->getId() . '/edit');
 
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
-
-        $this->client->submitForm('Update', [
-            'church[name]' => 'Something New',
-            'church[address]' => 'Something New',
-            'church[city]' => 'Something New',
-            'church[state]' => 'Something New',
-            'church[phone]' => 'Something New',
-            'church[denomination]' => 'Something New',
-            'church[website]' => 'Something New',
+        $form = $crawler->selectButton('Atualizar')->form([
+            'church[name]' => 'Igreja Renovada',
         ]);
 
-        self::assertResponseRedirects('/church/');
+        $this->client->submit($form);
 
-        $fixture = $this->churchRepository->findAll()[0];
-        self::assertSame('Something New', $fixture->getName());
-        */
+        self::assertResponseRedirects($this->path);
+
+        $updatedChurch = $this->repository->find($church->getId());
+        self::assertSame('Igreja Renovada', $updatedChurch->getName());
     }
 
     public function testRemove(): void
     {
-        $this->markTestIncomplete();
-        /*
-        $fixture = new Church();
-        $fixture->setName('My Title');
-        $fixture->setAddress('My Title');
-        $fixture->setCity('My Title');
-        $fixture->setState('My Title');
-        $fixture->setPhone('My Title');
-        $fixture->setDenomination('My Title');
-        $fixture->setWebsite('My Title');
-        $fixture->setCreatedAt(new \DateTimeImmutable());
-        $fixture->setUpdatedAt(new \DateTimeImmutable());
+        $church = $this->createChurch('Igreja Para Deletar');
+        $churchId = $church->getId();
+        
+        $crawler = $this->client->request('GET', $this->path . $churchId . '/edit');
+        $this->client->submitForm('Deletar'); 
 
-        $this->churchRepository->save($fixture, true);
+        self::assertResponseRedirects($this->path);
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
-
-        self::assertResponseRedirects('/church/');
-        self::assertSame(0, count($this->churchRepository->findAll()));
-        */
+        $this->entityManager->clear();
+        
+        $deletedChurch = $this->repository->find($churchId);
+        self::assertNull($deletedChurch);
     }
 }

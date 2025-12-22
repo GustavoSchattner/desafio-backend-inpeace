@@ -15,6 +15,7 @@ class ChurchRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Church::class);
     }
+
     /**
      * @return Church[] Returns an array of Church objects
      */
@@ -22,11 +23,12 @@ class ChurchRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.name LIKE :name')
-            ->setParameter('name', '%' . $name . '%')
+            ->setParameter('name', '%'.$name.'%')
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();
     }
+
     /**
      * @return array<int, array{name: string, members_count: int}>
      */
@@ -47,7 +49,7 @@ class ChurchRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.address LIKE :city')
-            ->setParameter('city', '%' . $city . '%')
+            ->setParameter('city', '%'.$city.'%')
             ->orderBy('c.name', 'ASC')
             ->getQuery()
             ->getResult();
