@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Member;
 use App\Form\MemberType;
 use App\Repository\MemberRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\MemberService;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,34 +21,33 @@ final class MemberController extends AbstractController
         PaginatorInterface $paginator,
         Request $request,
     ): Response {
-        // 1. Pega a query otimizada com JOIN
-        $query = $memberRepository->getPaginationQuery();
-
-        // 2. Pagina
         $pagination = $paginator->paginate(
-            $query,
+            $memberRepository->getPaginationQuery(),
             $request->query->getInt('page', 1),
-            10 // Limite por página
+            10
         );
 
-        // 3. Renderiza passando 'pagination'
         return $this->render('member/index.html.twig', [
             'pagination' => $pagination,
         ]);
     }
 
     #[Route('/new', name: 'app_member_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, MemberService $memberService): Response
     {
         $member = new Member();
         $form = $this->createForm(MemberType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($member);
-            $entityManager->flush();
+            try {
+                $memberService->save($member);
+                $this->addFlash('success', 'Membro cadastrado com sucesso.');
 
-            return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'Erro ao cadastrar membro: ' . $exception->getMessage());
+            }
         }
 
         return $this->render('member/new.html.twig', [
@@ -66,15 +65,20 @@ final class MemberController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_member_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Member $member, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
         $form = $this->createForm(MemberType::class, $member);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            try {
+                $memberService->save($member);
+                $this->addFlash('success', 'Membro atualizado com sucesso.');
 
-            return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
+                return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'Erro ao atualizar membro: ' . $exception->getMessage());
+            }
         }
 
         return $this->render('member/edit.html.twig', [
@@ -84,11 +88,17 @@ final class MemberController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_member_delete', methods: ['POST'])]
-    public function delete(Request $request, Member $member, EntityManagerInterface $entityManager): \Symfony\Component\HttpFoundation\RedirectResponse
+    public function delete(Request $request, Member $member, MemberService $memberService): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$member->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($member);
-            $entityManager->flush();
+        if ($this->isCsrfTokenValid('delete' . $member->getId(), $request->request->get('_token'))) {
+            try {
+                $memberService->remove($member);
+                $this->addFlash('success', 'Membro excluído com sucesso.');
+            } catch (\Exception $exception) {
+                $this->addFlash('error', 'Erro ao excluir membro: ' . $exception->getMessage());
+            }
+        } else {
+            $this->addFlash('error', 'Token de segurança inválido.');
         }
 
         return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
