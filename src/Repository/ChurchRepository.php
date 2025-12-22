@@ -62,4 +62,11 @@ class ChurchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function getPaginationQuery(): \Doctrine\ORM\Query
+    {
+        return $this->createQueryBuilder('c')
+            ->orderBy('c.id', 'DESC')
+            ->getQuery();
+    }
 }

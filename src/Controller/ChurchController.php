@@ -8,6 +8,7 @@ use App\Repository\ChurchRepository;
 use App\Service\ChurchManager;
 use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,10 +19,21 @@ use Symfony\Component\Routing\Attribute\Route;
 class ChurchController extends AbstractController
 {
     #[Route('/', name: 'app_church_index', methods: ['GET'])]
-    public function index(ChurchRepository $churchRepository): Response
-    {
+    public function index(
+        ChurchRepository $churchRepository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        $query = $churchRepository->getPaginationQuery();
+
+        $pagination = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
+        );
+
         return $this->render('church/index.html.twig', [
-            'churches' => $churchRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
