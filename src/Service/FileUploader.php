@@ -10,7 +10,7 @@ class FileUploader
 {
     public function __construct(
         private readonly string $targetDirectory,
-        private readonly SluggerInterface $slugger
+        private readonly SluggerInterface $slugger,
     ) {
     }
 
@@ -27,7 +27,7 @@ class FileUploader
             }
             $file->move($targetDir, $fileName);
         } catch (FileException $e) {
-            throw new \RuntimeException('Erro ao fazer upload da imagem: ' . $e->getMessage(), 0, $e);
+            throw new \RuntimeException('Erro ao fazer upload da imagem: '.$e->getMessage(), 0, $e);
         }
 
         return $fileName;

@@ -19,7 +19,7 @@ final class MemberController extends AbstractController
     public function index(
         MemberRepository $memberRepository,
         PaginatorInterface $paginator,
-        Request $request
+        Request $request,
     ): Response {
         // 1. Pega a query otimizada com JOIN
         $query = $memberRepository->getPaginationQuery();
@@ -36,6 +36,7 @@ final class MemberController extends AbstractController
             'pagination' => $pagination,
         ]);
     }
+
     #[Route('/new', name: 'app_member_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {

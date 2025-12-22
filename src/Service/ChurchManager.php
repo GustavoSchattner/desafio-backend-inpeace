@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class ChurchManager
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -17,11 +17,11 @@ class ChurchManager
         $this->entityManager->beginTransaction();
 
         try {
-            if ($action === 'cascade') {
+            if ('cascade' === $action) {
                 foreach ($church->getMembers() as $member) {
                     $this->entityManager->remove($member);
                 }
-            } elseif ($action === 'orphans') {
+            } elseif ('orphans' === $action) {
                 foreach ($church->getMembers() as $member) {
                     $member->setChurch(null);
                 }

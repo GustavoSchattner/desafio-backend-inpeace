@@ -22,7 +22,7 @@ class ChurchController extends AbstractController
     public function index(
         ChurchRepository $churchRepository,
         PaginatorInterface $paginator,
-        Request $request
+        Request $request,
     ): Response {
         $query = $churchRepository->getPaginationQuery();
 
@@ -53,7 +53,8 @@ class ChurchController extends AbstractController
                     $imageFileName = $fileUploader->upload($imageFile);
                     $church->setImage($imageFileName);
                 } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erro ao fazer upload da imagem: ' . $e->getMessage());
+                    $this->addFlash('error', 'Erro ao fazer upload da imagem: '.$e->getMessage());
+
                     return $this->render('church/new.html.twig', [
                         'church' => $church,
                         'form' => $form,
@@ -96,7 +97,8 @@ class ChurchController extends AbstractController
                     $imageFileName = $fileUploader->upload($imageFile);
                     $church->setImage($imageFileName);
                 } catch (\Exception $e) {
-                    $this->addFlash('error', 'Erro ao fazer upload da imagem: ' . $e->getMessage());
+                    $this->addFlash('error', 'Erro ao fazer upload da imagem: '.$e->getMessage());
+
                     return $this->render('church/edit.html.twig', [
                         'church' => $church,
                         'form' => $form,
@@ -119,10 +121,11 @@ class ChurchController extends AbstractController
     public function deleteComplex(
         Request $request,
         Church $church,
-        ChurchManager $churchManager
+        ChurchManager $churchManager,
     ): Response {
         if (!$this->isCsrfTokenValid('delete_generic', $request->request->get('_token'))) {
             $this->addFlash('error', 'Token de segurança inválido.');
+
             return $this->redirectToRoute('app_church_index');
         }
 
@@ -131,14 +134,14 @@ class ChurchController extends AbstractController
         try {
             $churchManager->deleteChurch($church, $action);
 
-            if ($action === 'cascade') {
+            if ('cascade' === $action) {
                 $this->addFlash('success', 'Igreja e membros removidos.');
             } else {
                 $this->addFlash('warning', 'Igreja removida. Membros foram despatriados.');
             }
 
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Erro ao processar: ' . $e->getMessage());
+            $this->addFlash('error', 'Erro ao processar: '.$e->getMessage());
         }
 
         return $this->redirectToRoute('app_church_index', [], Response::HTTP_SEE_OTHER);

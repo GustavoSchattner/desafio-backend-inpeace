@@ -23,20 +23,20 @@ class Church implements \Stringable
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "O nome da igreja é obrigatório.")]
+    #[Assert\NotBlank(message: 'O nome da igreja é obrigatório.')]
     #[Assert\Length(
         min: 3,
         max: 255,
-        minMessage: "O nome deve ter pelo menos {{ limit }} caracteres."
+        minMessage: 'O nome deve ter pelo menos {{ limit }} caracteres.'
     )]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "O endereço é obrigatório.")]
+    #[Assert\NotBlank(message: 'O endereço é obrigatório.')]
     private ?string $address = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: "O site deve ser uma URL válida.")]
+    #[Assert\Url(message: 'O site deve ser uma URL válida.')]
     private ?string $website = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -145,6 +145,6 @@ class Church implements \Stringable
 
     public function getImagePath(): ?string
     {
-        return $this->image ? '/uploads/churches/' . $this->image : null;
+        return $this->image ? '/uploads/churches/'.$this->image : null;
     }
 }
