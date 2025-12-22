@@ -61,8 +61,7 @@ class Member
     private ?string $state = null;
 
     #[ORM\ManyToOne(inversedBy: 'members')]
-    #[ORM\JoinColumn(nullable: true)]
-    #[Assert\NotNull(message: 'Você precisa selecionar uma Igreja.')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Church $church = null;
 
     public function getId(): ?int
