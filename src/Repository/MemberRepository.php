@@ -17,6 +17,9 @@ class MemberRepository extends ServiceEntityRepository
         parent::__construct($registry, Member::class);
     }
 
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
     public function findByName(string $name): array
     {
         return $this->createQueryBuilder('m')
@@ -27,6 +30,9 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
     public function findByChurch(Church $church): array
     {
         return $this->createQueryBuilder('m')
@@ -55,6 +61,9 @@ class MemberRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
     public function findWithChurch(): array
     {
         return $this->createQueryBuilder('m')
@@ -75,6 +84,9 @@ class MemberRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @return Member[] Returns an array of Member objects
+     */
     public function findByCity(string $city): array
     {
         return $this->createQueryBuilder('m')
