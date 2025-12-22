@@ -15,7 +15,9 @@ class ChurchRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Church::class);
     }
-
+    /**
+     * @return Church[] Returns an array of Church objects
+     */
     public function findByName(string $name): array
     {
         return $this->createQueryBuilder('c')
@@ -25,7 +27,9 @@ class ChurchRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
+    /**
+     * @return array<int, array{name: string, members_count: int}>
+     */
     public function findWithMembers(): array
     {
         return $this->createQueryBuilder('c')
@@ -36,6 +40,9 @@ class ChurchRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @return Church[]
+     */
     public function findByAddressCity(string $city): array
     {
         return $this->createQueryBuilder('c')
@@ -54,6 +61,9 @@ class ChurchRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
+    /**
+     * @return Church[]
+     */
     public function findRecentChurches(int $limit = 10): array
     {
         return $this->createQueryBuilder('c')
@@ -68,5 +78,23 @@ class ChurchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->orderBy('c.id', 'DESC')
             ->getQuery();
+    }
+
+    public function save(Church $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Church $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->remove($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
     }
 }

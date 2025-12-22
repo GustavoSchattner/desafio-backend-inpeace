@@ -10,8 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ChurchManagerTest extends KernelTestCase
 {
-    private ?EntityManagerInterface $entityManager;
-    private ?ChurchManager $churchManager;
+    private EntityManagerInterface $entityManager;
+    private ChurchManager $churchManager;
 
     protected function setUp(): void
     {
@@ -104,6 +104,5 @@ class ChurchManagerTest extends KernelTestCase
     {
         parent::tearDown();
         $this->entityManager->close();
-        $this->entityManager = null;
     }
 }
