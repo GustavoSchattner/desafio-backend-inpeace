@@ -1,0 +1,27 @@
+{{ form_start(form) }}
+    {{ form_errors(form) }}
+
+    {{ form_row(form.name) }}
+    {{ form_row(form.address) }}
+    {{ form_row(form.website) }}
+
+    <div class="mb-3">
+        {% if church.image %}
+            <div class="mb-2">
+                <label class="form-label d-block">Imagem Atual:</label>
+                <img src="{{ asset('uploads/churches/' ~ church.image) }}" 
+                     alt="Imagem da Igreja" 
+                     style="max-width: 200px; height: auto; border-radius: 8px; border: 1px solid #ddd; padding: 5px;">
+                <div class="form-text text-muted small">
+                    Deixe o campo abaixo vazio para manter esta imagem.
+                </div>
+            </div>
+        {% endif %}
+
+        {{ form_row(form.image) }}
+    </div>
+
+    <div style="margin-top: 20px;">
+        <button class="btn btn-primary">{{ button_label|default('Save') }}</button>
+    </div>
+{{ form_end(form) }}

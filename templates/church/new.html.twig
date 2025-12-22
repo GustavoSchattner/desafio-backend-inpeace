@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Church{% endblock %}
+
+{% block body %}
+    <h1>Create new Church</h1>
+
+    {{ include('church/_form.html.twig') }}
+
+    <a href="{{ path('app_church_index') }}">back to list</a>
+{% endblock %}
+
+

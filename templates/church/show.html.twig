@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Church{% endblock %}
+
+{% block body %}
+    <h1>Church</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ church.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ church.name }}</td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td>{{ church.address }}</td>
+            </tr>
+            <tr>
+                <th>Website</th>
+                <td>{{ church.website }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td>{{ church.image }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_church_index') }}">back to list</a>
+
+    <a href="{{ path('app_church_edit', {'id': church.id}) }}">edit</a>
+
+    {{ include('church/_delete_form.html.twig') }}
+{% endblock %}
