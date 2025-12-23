@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Service;
 
 use App\Entity\Member;
@@ -8,8 +10,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class MemberService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
-    ) {}
+        private EntityManagerInterface $entityManager,
+    ) {
+    }
 
     public function save(Member $member): void
     {
