@@ -22,8 +22,12 @@ class ChurchControllerTest extends WebTestCase
         $this->client->followRedirects();
 
         $container = static::getContainer();
-        $this->repository = $container->get(ChurchRepository::class);
-        $this->entityManager = $container->get(EntityManagerInterface::class);
+        /** @var ChurchRepository $repo */
+        $repo = $container->get(ChurchRepository::class);
+        $this->repository = $repo;
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+        $this->entityManager = $em;
         $this->entityManager->createQuery('DELETE FROM App\Entity\Member')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Church')->execute();
     }
@@ -107,6 +111,7 @@ class ChurchControllerTest extends WebTestCase
         self::assertSelectorExists('.alert-success');
 
         $updatedChurch = $this->repository->find($church->getId());
+        self::assertNotNull($updatedChurch);
         self::assertSame('Igreja Renovada', $updatedChurch->getName());
     }
 
@@ -114,7 +119,7 @@ class ChurchControllerTest extends WebTestCase
     {
         $crawler = $this->client->request('GET', $this->path);
 
-        return $crawler->filter('#deleteForm input[name="_token"]')->attr('value');
+        return (string) $crawler->filter('#deleteForm input[name="_token"]')->attr('value');
     }
 
     public function testDeleteSimple(): void

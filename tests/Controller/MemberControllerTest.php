@@ -19,8 +19,12 @@ class MemberControllerTest extends WebTestCase
     {
         $this->client = static::createClient();
         $container = static::getContainer();
-        $this->repository = $container->get(MemberRepository::class);
-        $this->entityManager = $container->get(EntityManagerInterface::class);
+        /** @var MemberRepository $repo */
+        $repo = $container->get(MemberRepository::class);
+        $this->repository = $repo;
+        /** @var EntityManagerInterface $em */
+        $em = $container->get(EntityManagerInterface::class);
+        $this->entityManager = $em;
     }
 
     private function createChurch(): Church
