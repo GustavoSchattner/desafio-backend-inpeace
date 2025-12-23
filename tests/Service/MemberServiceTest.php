@@ -11,18 +11,9 @@ use PHPUnit\Framework\TestCase;
 
 final class MemberServiceTest extends TestCase
 {
-    public function testSavePersistsAndFlushes(): void
-    {
-        $member = new Member();
-
-        $em = $this->createMock(EntityManagerInterface::class);
-        $em->expects($this->once())->method('persist')->with($member);
-        $em->expects($this->once())->method('flush');
-
-        $service = new MemberService($em);
-        $service->save($member);
-    }
-
+    /**
+     * @return void
+     */
     public function testRemoveDeletesAndFlushes(): void
     {
         $member = new Member();
@@ -33,5 +24,20 @@ final class MemberServiceTest extends TestCase
 
         $service = new MemberService($em);
         $service->remove($member);
+    }
+
+    /**
+     * @return void
+     */
+    public function testSavePersistsAndFlushes(): void
+    {
+        $member = new Member();
+
+        $em = $this->createMock(EntityManagerInterface::class);
+        $em->expects($this->once())->method('persist')->with($member);
+        $em->expects($this->once())->method('flush');
+
+        $service = new MemberService($em);
+        $service->save($member);
     }
 }

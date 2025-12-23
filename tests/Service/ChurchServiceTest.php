@@ -16,6 +16,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 final class ChurchServiceTest extends TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandleImageUploadSetsImage(): void
     {
         $church = $this->createMock(Church::class);
@@ -27,14 +30,17 @@ final class ChurchServiceTest extends TestCase
         $uploader->expects($this->once())->method('upload')->with($file)->willReturn('img.png');
 
         $service = new ChurchService(
+            $this->createMock(ChurchRepository::class),
             $this->createMock(EntityManagerInterface::class),
-            $uploader,
-            $this->createMock(ChurchRepository::class)
+            $uploader
         );
 
         $service->handleImageUpload($church, $file);
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteWithActionCascadeRemovesMembersAndChurch(): void
     {
         $member = $this->createMock(Member::class);
@@ -48,14 +54,17 @@ final class ChurchServiceTest extends TestCase
         $em->expects($this->once())->method('flush');
 
         $service = new ChurchService(
+            $this->createMock(ChurchRepository::class),
             $em,
-            $this->createMock(FileUploader::class),
-            $this->createMock(ChurchRepository::class)
+            $this->createMock(FileUploader::class)
         );
 
         $service->deleteWithAction($church, ChurchService::ACTION_CASCADE_DELETE);
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteWithActionTransfersMembersAndReturnsMessage(): void
     {
         $member = $this->createMock(Member::class);
@@ -81,9 +90,9 @@ final class ChurchServiceTest extends TestCase
         $em->expects($this->once())->method('remove')->with($source);
 
         $service = new ChurchService(
+            $repo,
             $em,
-            $this->createMock(FileUploader::class),
-            $repo
+            $this->createMock(FileUploader::class)
         );
 
         $message = $service->deleteWithAction($source, '2');
@@ -91,10 +100,16 @@ final class ChurchServiceTest extends TestCase
         $this->assertSame('Membros transferidos para Igreja Destino.', $message);
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteWithActionDoesNotTransferWhenTargetHasSameId(): void
     {
         $member = $this->createMock(Member::class);
-        $member->expects($this->never())->method('setChurch');
+        
+        $member->expects($this->once())
+            ->method('setChurch')
+            ->with(null);
 
         $members = new ArrayCollection([$member]);
 
@@ -113,9 +128,9 @@ final class ChurchServiceTest extends TestCase
         $em->expects($this->once())->method('flush');
 
         $service = new ChurchService(
+            $repo,
             $em,
-            $this->createMock(FileUploader::class),
-            $repo
+            $this->createMock(FileUploader::class)
         );
 
         $message = $service->deleteWithAction($source, '1');
