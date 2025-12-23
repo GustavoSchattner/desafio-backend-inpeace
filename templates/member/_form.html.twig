@@ -1,7 +1,88 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary">{{ button_label|default('Salvar') }}</button>
-{{ form_end(form) }}
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.name, {
+                        'label': 'Nome Completo',
+                        'attr': {'class': 'form-control', 'placeholder': 'Ex: João da Silva'}
+                    }) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.cpf, {
+                        'label': 'CPF',
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.email, {
+                        'label': 'Email',
+                        'attr': {'class': 'form-control', 'placeholder': 'exemplo@email.com', 'type': 'email'}
+                    }) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.phone, {
+                        'label': 'Telefone',
+                        'attr': {'class': 'form-control', 'placeholder': '(11) 99999-9999'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.birthDate, {
+                        'label': 'Data de Nascimento',
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.address, {
+                        'label': 'Logradouro',
+                        'attr': {'class': 'form-control', 'placeholder': 'Rua, avenida, etc...'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.state, {
+                        'label': 'Estado (UF)',
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                </div>
+                <div class="col-md-6">
+                    {{ form_row(form.city, {
+                        'label': 'Cidade',
+                        'attr': {'class': 'form-control'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(form.church, {
+                        'label': 'Igreja',
+                        'attr': {'class': 'form-select'}
+                    }) }}
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 mt-5 pt-3 border-top">
+                <button type="submit" class="btn btn-success btn-lg">
+                    <i class="bi bi-check-circle"></i> {{ button_label|default('Salvar') }}
+                </button>
+                <a href="{{ path('app_member_index') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
 
 <script src="{{ asset('js/cpf-mask.js') }}"></script>
-<script src="{{ asset('js/ibge-service.js') }}"></script>
+<script src="{{ asset('js/ibge-service-new.js') }}"></script>

@@ -1,54 +1,122 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Member{% endblock %}
+{% block title %}{{ member.name }}{% endblock %}
 
 {% block body %}
-    <h1>Member</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-5">
+                    <div class="mb-5">
+                        <h1 class="h2 fw-bold mb-1">
+                            <i class="bi bi-person-fill text-success"></i> {{ member.name }}
+                        </h1>
+                        <p class="text-muted small">ID #{{ member.id }}</p>
+                    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ member.id }}</td>
-            </tr>
-            <tr>
-                <th>Name</th>
-                <td>{{ member.name }}</td>
-            </tr>
-            <tr>
-                <th>Cpf</th>
-                <td>{{ member.cpf }}</td>
-            </tr>
-            <tr>
-                <th>BirthDate</th>
-                <td>{{ member.birthDate ? member.birthDate|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ member.email }}</td>
-            </tr>
-            <tr>
-                <th>Phone</th>
-                <td>{{ member.phone }}</td>
-            </tr>
-            <tr>
-                <th>Address</th>
-                <td>{{ member.address }}</td>
-            </tr>
-            <tr>
-                <th>City</th>
-                <td>{{ member.city }}</td>
-            </tr>
-            <tr>
-                <th>State</th>
-                <td>{{ member.state }}</td>
-            </tr>
-        </tbody>
-    </table>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">CPF</div>
+                            <div class="text-dark">{{ member.cpf }}</div>
+                        </div>
 
-    <a href="{{ path('app_member_index') }}">back to list</a>
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Email</div>
+                            <div class="text-dark">
+                                {% if member.email %}
+                                    <a href="mailto:{{ member.email }}" class="text-primary text-decoration-none">
+                                        {{ member.email }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Não informado</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
 
-    <a href="{{ path('app_member_edit', {'id': member.id}) }}">edit</a>
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Telefone</div>
+                            <div class="text-dark">
+                                {% if member.phone %}
+                                    <a href="tel:{{ member.phone }}" class="text-primary text-decoration-none">
+                                        {{ member.phone }}
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted">Não informado</span>
+                                {% endif %}
+                            </div>
+                        </div>
 
-    {{ include('member/_delete_form.html.twig') }}
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Data de Nascimento</div>
+                            <div class="text-dark">
+                                {% if member.birthDate %}
+                                    {{ member.birthDate|date('d/m/Y') }}
+                                {% else %}
+                                    <span class="text-muted">Não informado</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-12 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Endereço</div>
+                            <div class="text-dark">
+                                {% if member.address %}
+                                    {{ member.address }}
+                                {% else %}
+                                    <span class="text-muted">Não informado</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Cidade</div>
+                            <div class="text-dark">{{ member.city }}</div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="small text-muted fw-bold text-uppercase mb-1">Estado</div>
+                            <div class="text-dark">{{ member.state }}</div>
+                        </div>
+                    </div>
+
+                    {% if member.church %}
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <div class="small text-muted fw-bold text-uppercase mb-2">Igreja</div>
+                            <div class="text-dark">
+                                <a href="{{ path('app_church_show', {'id': member.church.id}) }}" class="text-primary text-decoration-none fw-bold">
+                                    <i class="bi bi-church"></i> {{ member.church.name }}
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mb-4 p-3 bg-warning bg-opacity-10 rounded">
+                            <div class="small text-muted fw-bold text-uppercase mb-2">Igreja</div>
+                            <div class="text-warning">
+                                <i class="bi bi-exclamation-triangle"></i> Nenhuma igreja atribuída
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-flex gap-2 mt-5 pt-4 border-top">
+                        <a href="{{ path('app_member_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </a>
+                        <a href="{{ path('app_member_edit', {'id': member.id}) }}" class="btn btn-warning">
+                            <i class="bi bi-pencil"></i> Editar
+                        </a>
+
+                        {{ include('member/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
