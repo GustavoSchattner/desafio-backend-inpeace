@@ -10,6 +10,11 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class CpfValidator extends ConstraintValidator
 {
+    /**
+     * @param mixed $value
+     * @param Constraint $constraint
+     * @return void
+     */
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof Cpf) {
@@ -20,13 +25,10 @@ class CpfValidator extends ConstraintValidator
             return;
         }
 
-        $cpf = preg_replace('/\D/', '', $value);
+        $cpf = preg_replace('/\D/', '', (string) $value);
 
         if (11 !== strlen($cpf) || preg_match('/(\d)\1{10}/', $cpf)) {
-            $this->context->buildViolation($constraint->message)
-                ->setParameter('{{ value }}', $value)
-                ->addViolation();
-
+            $this->addViolation($value, $constraint);
             return;
         }
 
@@ -35,23 +37,22 @@ class CpfValidator extends ConstraintValidator
                 $d += (int) $cpf[$c] * (($t + 1) - $c);
             }
             $d = ((10 * $d) % 11) % 10;
-            if ($cpf[$c] != $d) {
-                $this->context->buildViolation($constraint->message)
-                    ->setParameter('{{ value }}', $value)
-                    ->addViolation();
-
+            if ((int) $cpf[$t] !== $d) {
+                $this->addViolation($value, $constraint);
                 return;
             }
         }
     }
 
-    public function testValidationStopsAtFirstInvalidCheckDigit(): void
+    /**
+     * @param mixed $value
+     * @param Cpf $constraint
+     * @return void
+     */
+    private function addViolation(mixed $value, Cpf $constraint): void
     {
-        $cpfInvalido = '111.111.111-21'; 
-
-        $constraint = new Cpf();
-        $this->validator->validate($cpfInvalido, $constraint);
-
-        $this->assertCount(1, $this->context->getViolations());
+        $this->context->buildViolation($constraint->message)
+            ->setParameter('{{ value }}', (string) $value)
+            ->addViolation();
     }
 }
