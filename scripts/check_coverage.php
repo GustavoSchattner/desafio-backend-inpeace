@@ -22,14 +22,20 @@ if ($xml === false) {
     exit(4);
 }
 
-$metrics = $xml->project->metrics ?? null;
-if (!$metrics) {
+// Aggregate metrics across the report (Clover puts metrics on multiple nodes)
+$metricsNodes = $xml->xpath('//metrics[@statements]');
+if ($metricsNodes === false || count($metricsNodes) === 0) {
     echo "Coverage metrics not found in file\n";
     exit(5);
 }
 
-$statements = (int) $metrics['statements'];
-$covered = (int) $metrics['covered'];
+$statements = 0;
+$covered = 0;
+foreach ($metricsNodes as $m) {
+    $statements += (int) $m['statements'];
+    // Clover may use 'coveredstatements' or 'covered' depending on generator
+    $covered += (int) ($m['coveredstatements'] ?? $m['covered']);
+}
 
 if ($statements === 0) {
     echo "No statements found in coverage report\n";
