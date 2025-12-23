@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Church;
@@ -93,8 +95,16 @@ class ChurchController extends AbstractController
     #[Route('/{id}', name: 'app_church_delete', methods: ['POST'])]
     public function delete(Request $request, Church $church, ChurchService $churchService): Response
     {
-        if ($this->isCsrfTokenValid('delete_generic', $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        if (!is_string($token) && null !== $token) {
+            $token = (string) $token;
+        }
+
+        if ($this->isCsrfTokenValid('delete_generic', $token)) {
             $action = $request->request->get('move_to_church');
+            if (!is_string($action) && null !== $action) {
+                $action = (string) $action;
+            }
             $message = $churchService->deleteWithAction($church, $action);
 
             $this->addFlash('success', $message);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Member;
@@ -46,7 +48,7 @@ final class MemberController extends AbstractController
 
                 return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao cadastrar membro: ' . $exception->getMessage());
+                $this->addFlash('error', 'Erro ao cadastrar membro: '.$exception->getMessage());
             }
         }
 
@@ -77,7 +79,7 @@ final class MemberController extends AbstractController
 
                 return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao atualizar membro: ' . $exception->getMessage());
+                $this->addFlash('error', 'Erro ao atualizar membro: '.$exception->getMessage());
             }
         }
 
@@ -90,12 +92,17 @@ final class MemberController extends AbstractController
     #[Route('/{id}', name: 'app_member_delete', methods: ['POST'])]
     public function delete(Request $request, Member $member, MemberService $memberService): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $member->getId(), $request->request->get('_token'))) {
+        $token = $request->request->get('_token');
+        if (!is_string($token) && null !== $token) {
+            $token = (string) $token;
+        }
+
+        if ($this->isCsrfTokenValid('delete'.$member->getId(), $token)) {
             try {
                 $memberService->remove($member);
                 $this->addFlash('success', 'Membro excluído com sucesso.');
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao excluir membro: ' . $exception->getMessage());
+                $this->addFlash('error', 'Erro ao excluir membro: '.$exception->getMessage());
             }
         } else {
             $this->addFlash('error', 'Token de segurança inválido.');
