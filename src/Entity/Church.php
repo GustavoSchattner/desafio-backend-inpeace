@@ -18,28 +18,14 @@ class Church implements \Stringable
 {
     use SoftDeleteableEntity;
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    /** @phpstan-ignore-next-line */
-    private ?int $id = null;
-
-    #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'O nome da igreja é obrigatório.')]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: 'O nome deve ter pelo menos {{ limit }} caracteres.'
-    )]
-    private ?string $name = null;
-
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: 'O endereço é obrigatório.')]
     private ?string $address = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Url(message: 'O site deve ser uma URL válida.')]
-    private ?string $website = null;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
@@ -50,67 +36,82 @@ class Church implements \Stringable
     #[ORM\OneToMany(targetEntity: Member::class, mappedBy: 'church')]
     private Collection $members;
 
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'O nome da igreja é obrigatório.')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'O nome deve ter pelo menos {{ limit }} caracteres.'
+    )]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url(message: 'O site deve ser uma URL válida.')]
+    private ?string $website = null;
+
     public function __construct()
     {
         $this->members = new ArrayCollection();
     }
 
+    /**
+     * @return string
+     */
     public function __toString(): string
     {
         return $this->name ?? 'Nova Igreja';
     }
 
+    /**
+     * @return int|null
+     */
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getAddress(): ?string
     {
         return $this->address;
     }
 
+    /**
+     * @param string $address
+     * @return static
+     */
     public function setAddress(string $address): static
     {
         $this->address = $address;
-
         return $this;
     }
 
-    public function getWebsite(): ?string
-    {
-        return $this->website;
-    }
-
-    public function setWebsite(?string $website): static
-    {
-        $this->website = $website;
-
-        return $this;
-    }
-
+    /**
+     * @return string|null
+     */
     public function getImage(): ?string
     {
         return $this->image;
     }
 
+    /**
+     * @param string|null $image
+     * @return static
+     */
     public function setImage(?string $image): static
     {
         $this->image = $image;
-
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getImagePath(): ?string
+    {
+        return $this->image ? '/uploads/churches/' . $this->image : null;
     }
 
     /**
@@ -121,32 +122,72 @@ class Church implements \Stringable
         return $this->members;
     }
 
+    /**
+     * @return int
+     */
+    public function getMembersCount(): int
+    {
+        return $this->members->count();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return static
+     */
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWebsite(): ?string
+    {
+        return $this->website;
+    }
+
+    /**
+     * @param string|null $website
+     * @return static
+     */
+    public function setWebsite(?string $website): static
+    {
+        $this->website = $website;
+        return $this;
+    }
+
+    /**
+     * @param Member $member
+     * @return static
+     */
     public function addMember(Member $member): static
     {
         if (!$this->members->contains($member)) {
             $this->members->add($member);
             $member->setChurch($this);
         }
-
         return $this;
     }
 
+    /**
+     * @param Member $member
+     * @return static
+     */
     public function removeMember(Member $member): static
     {
         if ($this->members->removeElement($member) && $member->getChurch() === $this) {
             $member->setChurch(null);
         }
-
         return $this;
-    }
-
-    public function getMembersCount(): int
-    {
-        return $this->members->count();
-    }
-
-    public function getImagePath(): ?string
-    {
-        return $this->image ? '/uploads/churches/'.$this->image : null;
     }
 }
