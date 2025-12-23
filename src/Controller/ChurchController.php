@@ -17,6 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/church')]
 class ChurchController extends AbstractController
 {
+    /**
+     * @param ChurchRepository $churchRepository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/', name: 'app_church_index', methods: ['GET'])]
     public function index(
         ChurchRepository $churchRepository,
@@ -30,11 +36,16 @@ class ChurchController extends AbstractController
         );
 
         return $this->render('church/index.html.twig', [
-            'pagination' => $pagination,
             'allChurches' => $churchRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param ChurchService $churchService
+     * @return Response
+     */
     #[Route('/new', name: 'app_church_new', methods: ['GET', 'POST'])]
     public function new(Request $request, ChurchService $churchService): Response
     {
@@ -46,12 +57,11 @@ class ChurchController extends AbstractController
             try {
                 $churchService->handleImageUpload($church, $form->get('image')->getData());
                 $churchService->save($church);
-
                 $this->addFlash('success', 'Igreja cadastrada com sucesso!');
 
                 return $this->redirectToRoute('app_church_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Erro ao salvar: '.$e->getMessage());
+                $this->addFlash('error', 'Erro ao salvar: ' . $e->getMessage());
             }
         }
 
@@ -61,12 +71,22 @@ class ChurchController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Church $church
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_church_show', methods: ['GET'])]
     public function show(Church $church): Response
     {
         return $this->render('church/show.html.twig', ['church' => $church]);
     }
 
+    /**
+     * @param Request $request
+     * @param Church $church
+     * @param ChurchService $churchService
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'app_church_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Church $church, ChurchService $churchService): Response
     {
@@ -77,12 +97,11 @@ class ChurchController extends AbstractController
             try {
                 $churchService->handleImageUpload($church, $form->get('image')->getData());
                 $churchService->save($church);
-
                 $this->addFlash('success', 'Igreja atualizada com sucesso!');
 
                 return $this->redirectToRoute('app_church_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Erro ao atualizar: '.$e->getMessage());
+                $this->addFlash('error', 'Erro ao atualizar: ' . $e->getMessage());
             }
         }
 
@@ -92,21 +111,23 @@ class ChurchController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param Church $church
+     * @param ChurchService $churchService
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_church_delete', methods: ['POST'])]
     public function delete(Request $request, Church $church, ChurchService $churchService): Response
     {
         $token = $request->request->get('_token');
-        if (!is_string($token) && null !== $token) {
-            $token = (string) $token;
-        }
+        $tokenString = is_string($token) ? $token : '';
 
-        if ($this->isCsrfTokenValid('delete_generic', $token)) {
+        if ($this->isCsrfTokenValid('delete_generic', $tokenString)) {
             $action = $request->request->get('move_to_church');
-            if (!is_string($action) && null !== $action) {
-                $action = (string) $action;
-            }
-            $message = $churchService->deleteWithAction($church, $action);
+            $actionString = is_string($action) ? $action : null;
 
+            $message = $churchService->deleteWithAction($church, $actionString);
             $this->addFlash('success', $message);
         } else {
             $this->addFlash('error', 'Token de segurança inválido.');

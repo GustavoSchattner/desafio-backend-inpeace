@@ -17,6 +17,12 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/member')]
 final class MemberController extends AbstractController
 {
+    /**
+     * @param MemberRepository $memberRepository
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/', name: 'app_member_index', methods: ['GET'])]
     public function index(
         MemberRepository $memberRepository,
@@ -34,6 +40,11 @@ final class MemberController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param MemberService $memberService
+     * @return Response
+     */
     #[Route('/new', name: 'app_member_new', methods: ['GET', 'POST'])]
     public function new(Request $request, MemberService $memberService): Response
     {
@@ -48,16 +59,20 @@ final class MemberController extends AbstractController
 
                 return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao cadastrar membro: '.$exception->getMessage());
+                $this->addFlash('error', 'Erro ao cadastrar membro.');
             }
         }
 
         return $this->render('member/new.html.twig', [
-            'member' => $member,
             'form' => $form,
+            'member' => $member,
         ]);
     }
 
+    /**
+     * @param Member $member
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_member_show', methods: ['GET'])]
     public function show(Member $member): Response
     {
@@ -66,6 +81,12 @@ final class MemberController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param Member $member
+     * @param MemberService $memberService
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'app_member_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Member $member, MemberService $memberService): Response
     {
@@ -79,30 +100,34 @@ final class MemberController extends AbstractController
 
                 return $this->redirectToRoute('app_member_index', [], Response::HTTP_SEE_OTHER);
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao atualizar membro: '.$exception->getMessage());
+                $this->addFlash('error', 'Erro ao atualizar membro.');
             }
         }
 
         return $this->render('member/edit.html.twig', [
-            'member' => $member,
             'form' => $form,
+            'member' => $member,
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param Member $member
+     * @param MemberService $memberService
+     * @return Response
+     */
     #[Route('/{id}', name: 'app_member_delete', methods: ['POST'])]
     public function delete(Request $request, Member $member, MemberService $memberService): Response
     {
         $token = $request->request->get('_token');
-        if (!is_string($token) && null !== $token) {
-            $token = (string) $token;
-        }
+        $tokenString = is_string($token) ? $token : '';
 
-        if ($this->isCsrfTokenValid('delete'.$member->getId(), $token)) {
+        if ($this->isCsrfTokenValid('delete' . $member->getId(), $tokenString)) {
             try {
                 $memberService->remove($member);
                 $this->addFlash('success', 'Membro excluído com sucesso.');
             } catch (\Exception $exception) {
-                $this->addFlash('error', 'Erro ao excluir membro: '.$exception->getMessage());
+                $this->addFlash('error', 'Erro ao excluir membro.');
             }
         } else {
             $this->addFlash('error', 'Token de segurança inválido.');
