@@ -71,7 +71,7 @@ class ChurchRepository extends ServiceEntityRepository
     public function findRecentChurches(int $limit = 10): array
     {
         return $this->createQueryBuilder('c')
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
             ->getResult();
