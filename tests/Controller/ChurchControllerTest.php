@@ -11,16 +11,16 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ChurchControllerTest extends WebTestCase
 {
+    private const CHURCH_PATH = '/church/';
+
     private KernelBrowser $client;
     private ChurchRepository $repository;
     private EntityManagerInterface $entityManager;
-    private string $path = '/church/';
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
         $this->client->followRedirects();
-
         $container = static::getContainer();
         /** @var ChurchRepository $repo */
         $repo = $container->get(ChurchRepository::class);
@@ -66,7 +66,7 @@ class ChurchControllerTest extends WebTestCase
         $this->createChurch('Igreja A');
         $this->createChurch('Igreja B');
 
-        $this->client->request('GET', $this->path);
+        $this->client->request('GET', self::CHURCH_PATH);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Listagem de Igrejas');
@@ -75,7 +75,7 @@ class ChurchControllerTest extends WebTestCase
 
     public function testNew(): void
     {
-        $crawler = $this->client->request('GET', $this->path.'new');
+        $crawler = $this->client->request('GET', self::CHURCH_PATH.'new');
         self::assertResponseStatusCodeSame(200);
 
         $form = $crawler->filter('button[type="submit"]')->form([
@@ -97,7 +97,7 @@ class ChurchControllerTest extends WebTestCase
     public function testEdit(): void
     {
         $church = $this->createChurch('Igreja Antiga');
-        $crawler = $this->client->request('GET', $this->path.$church->getId().'/edit');
+        $crawler = $this->client->request('GET', self::CHURCH_PATH.$church->getId().'/edit');
 
         self::assertResponseStatusCodeSame(200);
 
@@ -117,7 +117,7 @@ class ChurchControllerTest extends WebTestCase
 
     private function extractCsrfTokenFromIndex(): string
     {
-        $crawler = $this->client->request('GET', $this->path);
+        $crawler = $this->client->request('GET', self::CHURCH_PATH);
 
         return (string) $crawler->filter('#deleteForm input[name="_token"]')->attr('value');
     }
@@ -129,7 +129,7 @@ class ChurchControllerTest extends WebTestCase
 
         $token = $this->extractCsrfTokenFromIndex();
 
-        $this->client->request('POST', $this->path.$churchId, [
+        $this->client->request('POST', self::CHURCH_PATH.$churchId, [
             '_token' => $token,
             'move_to_church' => '',
         ]);
@@ -147,7 +147,7 @@ class ChurchControllerTest extends WebTestCase
         $this->createMember($church);
         $churchId = $church->getId();
         $token = $this->extractCsrfTokenFromIndex();
-        $this->client->request('POST', $this->path.$churchId, [
+        $this->client->request('POST', self::CHURCH_PATH.$churchId, [
             '_token' => $token,
             'move_to_church' => 'cascade_delete',
         ]);
