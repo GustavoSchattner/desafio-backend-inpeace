@@ -48,6 +48,22 @@ class CpfValidatorTest extends TestCase
         $this->validator->validate($cpf, new Cpf());
     }
 
+    public function testValidateStopsAtFirstError(): void
+    {
+        $cpfComDoisDigitosErrados = '111.111.111-88'; 
+
+        $builder = $this->createMock(ConstraintViolationBuilderInterface::class);
+
+        $this->context->expects($this->once())
+            ->method('buildViolation')
+            ->willReturn($builder);
+
+        $builder->expects($this->once())->method('setParameter')->willReturnSelf();
+        $builder->expects($this->once())->method('addViolation');
+
+        $this->validator->validate($cpfComDoisDigitosErrados, new Cpf());
+    }
+
     public function testIgnoreNullOrEmpty(): void
     {
         $this->context->expects($this->never())->method('buildViolation');

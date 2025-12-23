@@ -39,4 +39,17 @@ class FileUploader
     {
         return $this->targetDirectory;
     }
+
+    public function testUploadCreatesTargetDirectoryIfItDoesNotExist(): void
+{
+    if ($this->filesystem->exists($this->targetDir)) {
+        $this->filesystem->remove($this->targetDir);
+    }
+    
+    $uploader = new FileUploader($this->targetDir, new AsciiSlugger());
+
+    $uploader->upload($file);
+
+    $this->assertDirectoryExists($this->targetDir, 'O diretório deveria ter sido criado automaticamente.');
+}
 }

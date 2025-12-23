@@ -44,4 +44,14 @@ class CpfValidator extends ConstraintValidator
             }
         }
     }
+
+    public function testValidationStopsAtFirstInvalidCheckDigit(): void
+    {
+        $cpfInvalido = '111.111.111-21'; 
+
+        $constraint = new Cpf();
+        $this->validator->validate($cpfInvalido, $constraint);
+
+        $this->assertCount(1, $this->context->getViolations());
+    }
 }
