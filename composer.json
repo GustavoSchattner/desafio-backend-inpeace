@@ -94,8 +94,7 @@
         "coverage:html": "vendor/bin/phpunit --coverage-html coverage",
         "check:coverage": "php scripts/check_coverage.php coverage.clover 80",
         "infection": "vendor/bin/infection --coverage=coverage-xml --threads=2 --min-msi=60",
-        "mutation:check": "vendor/bin/infection --coverage=coverage-xml --threads=2 --min-msi=60",
-        "ci:local": "composer cs:check && composer analyze && composer test && composer coverage:xml && composer check:coverage && composer mutation:check"
+        "mutation:check": "vendor/bin/infection --coverage=coverage-xml --threads=2 --min-msi=60"
     },
 
 
