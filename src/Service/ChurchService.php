@@ -57,28 +57,61 @@ class ChurchService
     public function deleteWithAction(Church $church, ?string $action): string
     {
         if (self::ACTION_CASCADE_DELETE === $action) {
-            foreach ($church->getMembers() as $member) {
-                $this->entityManager->remove($member);
-            }
-            $this->finalizeDeletion($church);
-            return 'Igreja e todos os seus membros foram removidos.';
+            return $this->handleCascadeDelete($church);
         }
 
         if ($action) {
-            $targetChurch = $this->churchRepository->find($action);
-            if ($targetChurch && $targetChurch->getId() !== $church->getId()) {
-                foreach ($church->getMembers() as $member) {
-                    $member->setChurch($targetChurch);
-                }
-                $this->finalizeDeletion($church);
-                return 'Membros transferidos para ' . $targetChurch->getName() . '.';
+            $result = $this->handleMemberTransfer($church, $action);
+            if ($result !== null) {
+                return $result;
             }
         }
 
+        return $this->handleOrphanMembers($church);
+    }
+
+    /**
+     * @param Church $church
+     * @return string
+     */
+    private function handleCascadeDelete(Church $church): string
+    {
+        foreach ($church->getMembers() as $member) {
+            $this->entityManager->remove($member);
+        }
+        $this->finalizeDeletion($church);
+        return 'Igreja e todos os seus membros foram removidos.';
+    }
+
+    /**
+     * @param Church $church
+     * @param string $targetChurchId
+     * @return string|null
+     */
+    private function handleMemberTransfer(Church $church, string $targetChurchId): ?string
+    {
+        $targetChurch = $this->churchRepository->find($targetChurchId);
+
+        if (!$targetChurch || $targetChurch->getId() === $church->getId()) {
+            return null;
+        }
+
+        foreach ($church->getMembers() as $member) {
+            $member->setChurch($targetChurch);
+        }
+        $this->finalizeDeletion($church);
+        return 'Membros transferidos para ' . $targetChurch->getName() . '.';
+    }
+
+    /**
+     * @param Church $church
+     * @return string
+     */
+    private function handleOrphanMembers(Church $church): string
+    {
         foreach ($church->getMembers() as $member) {
             $member->setChurch(null);
         }
-
         $this->finalizeDeletion($church);
         return 'Igreja removida. Membros ficaram sem vínculo.';
     }
