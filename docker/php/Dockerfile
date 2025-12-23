@@ -26,6 +26,12 @@ RUN mkdir -p /home/$user/.composer && \
 
 COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
+# Install Xdebug for test coverage and mutation testing
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=coverage" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.start_with_request=0" >> /usr/local/etc/php/conf.d/xdebug.ini
+
 WORKDIR /var/www
 
 USER $user
