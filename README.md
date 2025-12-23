@@ -6,7 +6,7 @@
 ![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
 ![Doctrine](https://img.shields.io/badge/Doctrine-000?style=for-the-badge&logo=doctrine&logoColor=white)
 
-Sistema robusto de gerenciamento de igrejas e membros desenvolvido com **Symfony 6+**, seguindo **InPeace Style Guide** (PSR-12), com suporte a **Soft Delete**, **CSRF Protection**, **Type Hints Completos** e **Alta Performance**. O projeto integra-se com a API do IBGE para carregamento dinâmico de Estados e Cidades.
+Sistema robusto de gerenciamento de igrejas e membros desenvolvido com **Symfony 6+**, seguindo **PSR-12**, com suporte a **Soft Delete**, **CSRF Protection**, **Type Hints Completos** e **Alta Performance**. O projeto integra-se com a API do IBGE para carregamento dinâmico de Estados e Cidades.
 
 ---
 
@@ -508,7 +508,7 @@ GET  /api/cities/{state}  # Cidades de um estado
 
 ### Padrões de Código
 
-- ✅ **InPeace Style Guide:** PSR-12 com customizações InPeace
+- ✅ **PSR-12:** Padrão de código PHP seguido rigorosamente
 - ✅ **Strict Types:** `declare(strict_types=1)` em todos os arquivos PHP
 - ✅ **Type Hints:** Parâmetros e retornos totalmente tipados
 - ✅ **Service Pattern:** Lógica de negócio isolada em Services
@@ -626,13 +626,13 @@ private string $email;
 
 ```bash
 # Rodar todos os testes
-docker compose exec php php bin/phpunit
+docker compose exec app php bin/phpunit
 
 # Rodar apenas testes de Controller
-docker compose exec php php bin/phpunit tests/Controller/
+docker compose exec app php bin/phpunit tests/Controller/
 
 # Rodar com cobertura (gera relatório)
-docker compose exec php php bin/phpunit --coverage-html var/coverage
+docker compose exec app php bin/phpunit --coverage-html var/coverage
 ```
 
 ### Estrutura de Testes
@@ -667,63 +667,63 @@ class ChurchControllerTest extends WebTestCase
 
 ```bash
 # Listar todos os comandos
-docker compose exec php php bin/console list
+docker compose exec app php bin/console list
 
 # Migrations
-docker compose exec php php bin/console doctrine:migrations:migrate
-docker compose exec php php bin/console doctrine:migrations:status
-docker compose exec php php bin/console doctrine:migrations:rollback
+docker compose exec app php bin/console doctrine:migrations:migrate
+docker compose exec app php bin/console doctrine:migrations:status
+docker compose exec app php bin/console doctrine:migrations:rollback
 
 # Database
-docker compose exec php php bin/console doctrine:database:create
-docker compose exec php php bin/console doctrine:database:drop
-docker compose exec php php bin/console doctrine:schema:validate
+docker compose exec app php bin/console doctrine:database:create
+docker compose exec app php bin/console doctrine:database:drop
+docker compose exec app php bin/console doctrine:schema:validate
 
 # Cache
-docker compose exec php php bin/console cache:clear
-docker compose exec php php bin/console cache:warmup
+docker compose exec app php bin/console cache:clear
+docker compose exec app php bin/console cache:warmup
 
 # Assets
-docker compose exec php php bin/console assets:install public
+docker compose exec app php bin/console assets:install public
 
 # Rotas
-docker compose exec php php bin/console debug:router
-docker compose exec php php bin/console debug:router app_church_index
+docker compose exec app php bin/console debug:router
+docker compose exec app php bin/console debug:router app_church_index
 
 # Services
-docker compose exec php php bin/console debug:container
+docker compose exec app php bin/console debug:container
 ```
 
 ### Composer
 
 ```bash
 # Instalar dependências
-docker compose exec php composer install
+docker compose exec app composer install
 
 # Atualizar dependências
-docker compose exec php composer update
+docker compose exec app composer update
 
 # Adicionar pacote
-docker compose exec php composer require symfony/asset
+docker compose exec app composer require symfony/asset
 
 # Remover pacote
-docker compose exec php composer remove pacote/nome
+docker compose exec app composer remove pacote/nome
 ```
 
 ### Code Quality
 
 ```bash
 # Verificar estilo de código (PSR-12)
-docker compose exec php ./vendor/bin/phpcs src/
+docker compose exec app ./vendor/bin/phpcs src/
 
 # Corrigir estilo de código automaticamente
-docker compose exec php ./vendor/bin/phpcbf src/
+docker compose exec app ./vendor/bin/phpcbf src/
 
 # PHPStan (análise estática)
-docker compose exec php ./vendor/bin/phpstan analyse src/
+docker compose exec app ./vendor/bin/phpstan analyse src/
 
 # Rector (refactoring automático)
-docker compose exec php ./vendor/bin/rector process src/ --dry-run
+docker compose exec app ./vendor/bin/rector process src/ --dry-run
 ```
 
 ### Docker
@@ -732,18 +732,18 @@ docker compose exec php ./vendor/bin/rector process src/ --dry-run
 # Ver containers rodando
 docker compose ps
 
-# Entrar no container PHP
-docker compose exec php bash
+# Entrar no container da aplicação
+docker compose exec app bash
 
 # Entrar no MySQL
-docker compose exec mysql mysql -u sail -ppassword
+docker compose exec db mysql -u sail -ppassword
 
 # Ver logs
 docker compose logs
 
 # Ver logs de um serviço específico
-docker compose logs php
-docker compose logs mysql
+docker compose logs app
+docker compose logs db
 
 # Reiniciar containers
 docker compose restart
@@ -771,7 +771,7 @@ docker compose down -v
 #                            Deve ser 'mysql', não 'localhost'
 
 # Limpe o cache de configuração
-docker compose exec php php bin/console cache:clear
+docker compose exec app php bin/console cache:clear
 ```
 
 ### Problema: "Doctrine\ORM\ORMException: The EntityManager is closed"
@@ -796,18 +796,18 @@ docker compose logs mysql
 
 ```bash
 # Verificar status das migrations
-docker compose exec php php bin/console doctrine:migrations:status
+docker compose exec app php bin/console doctrine:migrations:status
 
 # Se o banco não existe, criar
-docker compose exec php php bin/console doctrine:database:create
+docker compose exec app php bin/console doctrine:database:create
 
 # Rodar migrations
-docker compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec app php bin/console doctrine:migrations:migrate
 
 # Se tiver conflitos, resetar (cuidado!)
-docker compose exec php php bin/console doctrine:database:drop --force
-docker compose exec php php bin/console doctrine:database:create
-docker compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec app php bin/console doctrine:database:drop --force
+docker compose exec app php bin/console doctrine:database:create
+docker compose exec app php bin/console doctrine:migrations:migrate
 ```
 
 ### Problema: Soft Delete não funciona
@@ -816,16 +816,16 @@ docker compose exec php php bin/console doctrine:migrations:migrate
 
 ```bash
 # Entrar no MySQL
-docker compose exec mysql mysql -u sail -ppassword desafio_inpeace
+docker compose exec db mysql -u sail -ppassword desafio_inpeace
 
 # Verificar se o campo deletedAt existe
 SHOW COLUMNS FROM member WHERE Field = 'deleted_at';
 
 # Se não existir, criar migração
-docker compose exec php php bin/console make:migration AddDeletedAtToMember
+docker compose exec app php bin/console make:migration AddDeletedAtToMember
 
 # Depois rodar a migration
-docker compose exec php php bin/console doctrine:migrations:migrate
+docker compose exec app php bin/console doctrine:migrations:migrate
 ```
 
 ### Problema: Formulário diz "The CSRF token is invalid"
@@ -837,7 +837,7 @@ docker compose exec php php bin/console doctrine:migrations:migrate
 1. Limpar cookies do navegador
 2. Limpar cache Symfony:
 ```bash
-docker compose exec php php bin/console cache:clear
+docker compose exec app php bin/console cache:clear
 ```
 
 3. Recarregar a página
@@ -848,10 +848,10 @@ docker compose exec php php bin/console cache:clear
 
 ```bash
 # Verificar pasta de uploads
-docker compose exec php ls -la public/uploads/
+docker compose exec app ls -la public/uploads/
 
 # Dar permissões se necessário
-docker compose exec php chmod -R 755 public/uploads/
+docker compose exec app chmod -R 755 public/uploads/
 
 # Verificar configuração no .env
 # UPLOAD_DIR=public/uploads/
@@ -863,10 +863,10 @@ docker compose exec php chmod -R 755 public/uploads/
 
 ```bash
 # Instalar assets
-docker compose exec php php bin/console assets:install public
+docker compose exec app php bin/console assets:install public
 
 # Se usar webpack/asset-mapper
-docker compose exec php php bin/console asset-map:compile
+docker compose exec app php bin/console asset-map:compile
 ```
 
 ---
