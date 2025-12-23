@@ -1,13 +1,22 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Church{% endblock %}
+{% block title %}Nova Igreja{% endblock %}
 
 {% block body %}
-    <h1>Create new Church</h1>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <h1 class="h2 fw-bold mb-2">
+                    <i class="bi bi-church text-primary"></i> Criar Nova Igreja
+                </h1>
+                <p class="text-muted">Preencha os campos abaixo para registrar uma nova igreja.</p>
+            </div>
 
-    {{ include('church/_form.html.twig') }}
-
-    <a href="{{ path('app_church_index') }}">back to list</a>
+            {{ include('church/_form.html.twig') }}
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 

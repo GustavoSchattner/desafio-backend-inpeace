@@ -1,29 +1,68 @@
-{{ form_start(form) }}
-    {{ form_errors(form) }}
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-4">
+        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+            {{ form_errors(form) }}
 
-    {{ form_row(form.name, {label: 'Nome da Igreja'}) }}
-    {{ form_row(form.address, {label: 'Endereço'}) }}
-    {{ form_row(form.website, {label: 'Site'}) }}
-
-    <div class="mb-3">
-        {% if church.image %}
-            <div class="card mb-3" style="max-width: 300px;">
-                <div class="card-header small text-muted">Imagem Atual</div>
-                <div class="card-body p-2 text-center">
-                    <img src="{{ asset('uploads/churches/' ~ church.image) }}" 
-                         alt="Imagem da Igreja" 
-                         class="img-fluid rounded">
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form_row(form.name, {
+                        'label': 'Nome da Igreja',
+                        'attr': {'class': 'form-control', 'placeholder': 'Ex: Igreja Evangélica...'}
+                    }) }}
                 </div>
-                <div class="card-footer text-muted small">
-                    Deixe o campo abaixo vazio para manter esta imagem.
+                <div class="col-md-6">
+                    {{ form_row(form.website, {
+                        'label': 'Website',
+                        'attr': {'class': 'form-control', 'placeholder': 'https://exemplo.com.br'}
+                    }) }}
                 </div>
             </div>
-        {% endif %}
 
-        {{ form_row(form.image, {label: 'Upload de Imagem'}) }}
-    </div>
+            <div class="row">
+                <div class="col-12">
+                    {{ form_row(form.address, {
+                        'label': 'Endereço Completo',
+                        'attr': {'class': 'form-control', 'placeholder': 'Rua, número, complemento...', 'rows': 2}
+                    }) }}
+                </div>
+            </div>
 
-    <div class="mt-4">
-        <button type="submit" class="btn btn-primary">{{ button_label|default('Salvar') }}</button>
+            <div class="form-group mt-4">
+                <label class="form-label fw-bold mb-3">Imagem da Igreja</label>
+                {% if church.image %}
+                    <div class="card mb-3 bg-light">
+                        <div class="card-body text-center py-4">
+                            <img src="{{ asset('uploads/churches/' ~ church.image) }}"
+                                 alt="Imagem da Igreja"
+                                 class="img-fluid rounded"
+                                 style="max-height: 300px; object-fit: cover;">
+                            <div class="small text-muted mt-2">Imagem atual</div>
+                        </div>
+                    </div>
+                    <div class="alert alert-info small mb-3">
+                        <i class="bi bi-info-circle"></i> Deixe o campo vazio para manter esta imagem.
+                    </div>
+                {% endif %}
+                {{ form_widget(form.image, {
+                    'attr': {'class': 'form-control', 'accept': 'image/*'}
+                }) }}
+                {% if form.image.vars.errors %}
+                    <div class="invalid-feedback d-block">
+                        {% for error in form.image.vars.errors %}
+                            <span>{{ error.message }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2 mt-5 pt-3 border-top">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-circle"></i> {{ button_label|default('Salvar') }}
+                </button>
+                <a href="{{ path('app_church_index') }}" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </a>
+            </div>
+        {{ form_end(form) }}
     </div>
-{{ form_end(form) }}
+</div>
