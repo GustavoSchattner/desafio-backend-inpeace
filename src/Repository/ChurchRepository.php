@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use App\Entity\Church;
@@ -37,7 +39,7 @@ class ChurchRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->leftJoin('c.members', 'm')
             ->addSelect('m')
-            ->orderBy('c.createdAt', 'DESC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery()
             ->getResult();
     }
