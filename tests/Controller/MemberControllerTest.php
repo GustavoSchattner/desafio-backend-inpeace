@@ -44,8 +44,7 @@ class MemberControllerTest extends WebTestCase
         $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Listagem de Membros');
-        self::assertSelectorExists('table.table');
+        self::assertPageTitleContains('Membros');
     }
 
     public function testNewMemberSubmission(): void

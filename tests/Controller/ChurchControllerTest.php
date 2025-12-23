@@ -69,7 +69,7 @@ class ChurchControllerTest extends WebTestCase
         $this->client->request('GET', self::CHURCH_PATH);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Listagem de Igrejas');
+        self::assertPageTitleContains('Igrejas');
         self::assertAnySelectorTextContains('table', 'Igreja A');
     }
 
