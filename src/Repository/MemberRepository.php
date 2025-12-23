@@ -45,6 +45,10 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param string $cpf
+     * @return Member|null
+     */
     public function findByCpf(string $cpf): ?Member
     {
         return $this->createQueryBuilder('m')
@@ -54,6 +58,10 @@ class MemberRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    /**
+     * @param string $email
+     * @return Member|null
+     */
     public function findByEmail(string $email): ?Member
     {
         return $this->createQueryBuilder('m')
@@ -76,6 +84,10 @@ class MemberRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @param Church $church
+     * @return int
+     */
     public function countByChurch(Church $church): int
     {
         return (int) $this->createQueryBuilder('m')
