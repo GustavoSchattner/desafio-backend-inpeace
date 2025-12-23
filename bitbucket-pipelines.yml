@@ -1,0 +1,14 @@
+image: php:8.2
+
+pipelines:
+  default:
+    - step:
+        name: "Run static checks and tests"
+        caches:
+          - composer
+        script:
+          - composer install --no-interaction --prefer-dist
+          - composer analyze
+          - composer phpcs:check
+          - composer cs:check
+          - composer test

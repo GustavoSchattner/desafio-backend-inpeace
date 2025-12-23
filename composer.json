@@ -90,6 +90,9 @@
         "cs:check": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --dry-run --diff --allow-risky=yes",
         "cs:fix": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --allow-risky=yes",
         "analyze": "vendor/bin/phpstan analyse -c phpstan.dist.neon",
+        "phpcs:check": "vendor/bin/phpcs --standard=phpcs.xml.dist",
+        "phpcbf:fix": "vendor/bin/phpcbf --standard=phpcs.xml.dist",
+        "cs:all": "composer phpcs:check && composer cs:check",
         "coverage:xml": "vendor/bin/phpunit --coverage-xml=coverage-xml --log-junit=coverage/junit.xml",
         "coverage:html": "vendor/bin/phpunit --coverage-html coverage",
         "check:coverage": "php scripts/check_coverage.php coverage.clover 80",
@@ -118,6 +121,9 @@
         "symfony/debug-bundle": "6.4.*",
         "symfony/maker-bundle": "^1.0",
         "symfony/stopwatch": "6.4.*",
-        "symfony/web-profiler-bundle": "6.4.*"
+        "symfony/web-profiler-bundle": "6.4.*",
+        "squizlabs/php_codesniffer": "^3.7",
+        "slevomat/coding-standard": "^8.9",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0"
     }
 }
