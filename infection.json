@@ -1,0 +1,9 @@
+{
+  "source": {
+    "directories": ["src"]
+  },
+  "logs": {
+    "text": "infection-log.txt",
+    "html": "infection-report"
+  }
+}
