@@ -25,20 +25,24 @@ class MemberType extends AbstractType
         $builder
             ->add('address', null, [
                 'label' => 'Logradouro',
+                'required' => false,
             ])
             ->add('birthDate', null, [
                 'label' => 'Data de Nascimento',
                 'widget' => 'single_text',
+                'required' => false,
             ])
             ->add('church', EntityType::class, [
                 'choice_label' => 'name',
                 'class' => Church::class,
                 'label' => 'Igreja',
                 'placeholder' => 'Selecione uma igreja...',
+                'required' => false,
             ])
             ->add('city', TextType::class, [
                 'attr' => ['class' => 'js-city-input'],
                 'label' => 'Cidade',
+                'required' => true,
             ])
             ->add('cpf', null, [
                 'attr' => [
@@ -47,20 +51,25 @@ class MemberType extends AbstractType
                     'placeholder' => '000.000.000-00',
                 ],
                 'label' => 'CPF',
+                'required' => true,
             ])
             ->add('email', EmailType::class, [
                 'label' => 'E-mail',
+                'required' => true,
             ])
             ->add('name', null, [
                 'attr' => ['placeholder' => 'Digite seu Nome'],
                 'label' => 'Nome Completo',
+                'required' => true,
             ])
             ->add('phone', TextType::class, [
                 'label' => 'Telefone',
+                'required' => false,
             ])
             ->add('state', TextType::class, [
                 'attr' => ['class' => 'js-state-input'],
                 'label' => 'Estado',
+                'required' => true,
             ]);
     }
 
