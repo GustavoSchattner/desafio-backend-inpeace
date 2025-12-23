@@ -14,23 +14,18 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ChurchType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     * @return void
+     */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
-                'label' => 'Nome da Igreja',
-            ])
             ->add('address', TextType::class, [
                 'label' => 'Endereço',
             ])
-            ->add('website', TextType::class, [
-                'required' => false,
-                'label' => 'Site (Opcional)',
-            ])
             ->add('image', FileType::class, [
-                'label' => 'Imagem da Igreja',
-                'mapped' => false,
-                'required' => false,
                 'constraints' => [
                     new File([
                         'maxSize' => '64M',
@@ -42,10 +37,23 @@ class ChurchType extends AbstractType
                         'mimeTypesMessage' => 'Por favor, envie uma imagem válida (JPG, PNG ou WEBP)',
                     ]),
                 ],
+                'label' => 'Imagem da Igreja',
+                'mapped' => false,
+                'required' => false,
             ])
-        ;
+            ->add('name', TextType::class, [
+                'label' => 'Nome da Igreja',
+            ])
+            ->add('website', TextType::class, [
+                'label' => 'Site (Opcional)',
+                'required' => false,
+            ]);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
