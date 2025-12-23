@@ -1,9 +1,9 @@
 function initCpfMask() {
-    const cpfInputs = document.querySelectorAll('.js-cpf');
+    const cpfInputs = document.querySelectorAll('input[name*="cpf"]');
 
     const applyMask = (input) => {
         let value = input.value;
-        
+
         value = value.replace(/\D/g, "");
 
         if (value.length > 11) value = value.slice(0, 11);
@@ -19,14 +19,19 @@ function initCpfMask() {
 
     cpfInputs.forEach(input => {
         applyMask(input);
-
         input.addEventListener('input', (e) => applyMask(e.target));
+        input.addEventListener('keyup', (e) => applyMask(e.target));
+        input.addEventListener('change', (e) => applyMask(e.target));
+        input.addEventListener('paste', (e) => {
+            setTimeout(() => applyMask(e.target), 10);
+        });
     });
 }
 
-document.addEventListener('turbo:load', initCpfMask);
-document.addEventListener('DOMContentLoaded', initCpfMask);
-
-if (document.querySelector('.js-cpf')) {
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCpfMask);
+} else {
     initCpfMask();
 }
+
+document.addEventListener('turbo:load', initCpfMask);
