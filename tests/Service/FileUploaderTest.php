@@ -6,31 +6,57 @@ namespace App\Tests\Service;
 
 use App\Service\FileUploader;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\String\Slugger\SluggerInterface;
-use Symfony\Component\String\UnicodeString;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
-final class FileUploaderTest extends TestCase
+class FileUploaderTest extends TestCase
 {
-    public function testUploadMovesFileAndReturnsFilename(): void
+    private string $targetDir;
+    private string $tempFile;
+
+    protected function setUp(): void
     {
-        $tmpDir = sys_get_temp_dir() . '/desafio_test_' . uniqid();
-        mkdir($tmpDir);
+        $this->targetDir = sys_get_temp_dir() . '/inpeace_test_' . uniqid();
+        if (is_dir($this->targetDir)) {
+            rmdir($this->targetDir);
+        }
 
-        $tmpFile = sys_get_temp_dir() . '/upl_' . uniqid() . '.png';
-        file_put_contents($tmpFile, 'content');
-        $uploaded = new UploadedFile($tmpFile, 'original.png', null, null, true);
+        $this->tempFile = sys_get_temp_dir() . '/test_upload.jpg';
+        touch($this->tempFile);
+    }
 
-        $slugger = $this->createMock(SluggerInterface::class);
-        $slugger->method('slug')->willReturn(new UnicodeString('original'));
+    public function testUploadCreatesDirectoryAndMovesFile(): void
+    {
+        $slugger = new AsciiSlugger();
+        $uploader = new FileUploader($this->targetDir, $slugger);
 
-        $uploader = new FileUploader($tmpDir, $slugger);
-        $filename = $uploader->upload($uploaded);
+        $file = new UploadedFile(
+            $this->tempFile,
+            'test_upload.jpg',
+            'image/jpeg',
+            null,
+            true 
+        );
 
-        $this->assertMatchesRegularExpression('/^original-[a-z0-9]+\.[a-z0-9]+$/', $filename);
-        $this->assertFileExists($tmpDir . '/' . $filename);
+        $filename = $uploader->upload($file);
+        
+        $this->assertDirectoryExists($this->targetDir);
 
-        unlink($tmpDir . '/' . $filename);
-        rmdir($tmpDir);
+        $this->assertFileExists($this->targetDir . '/' . $filename);
+    }
+
+    protected function tearDown(): void
+    {
+        if (is_dir($this->targetDir)) {
+            $files = glob($this->targetDir . '/*');
+            foreach ($files as $file) {
+                unlink($file);
+            }
+            rmdir($this->targetDir);
+        }
+        
+        if (file_exists($this->tempFile)) {
+            unlink($this->tempFile);
+        }
     }
 }

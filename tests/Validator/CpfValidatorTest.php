@@ -55,9 +55,6 @@ class CpfValidatorTest extends TestCase
         $this->validator->validate('', new Cpf());
     }
 
-    /**
-     * @return array<array<string>>
-     */
     public static function validCpfProvider(): array
     {
         return [
@@ -68,16 +65,13 @@ class CpfValidatorTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<array<string>>
-     */
     public static function invalidCpfProvider(): array
     {
         return [
-            ['11111111111'],
-            ['12345678900'],
-            ['123'],
-            ['abcdefghijk'],
+            ['11111111111'], 
+            ['12345678900'], 
+            ['123'],        
+            ['abcdefghijk'], 
         ];
     }
 }

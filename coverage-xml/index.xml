@@ -1,0 +1,233 @@
+<?xml version="1.0"?>
+<phpunit xmlns="https://schema.phpunit.de/coverage/1.0">
+  <build time="Tue Dec 23 12:43:00 UTC 2025" phpunit="11.5.46" coverage="11.0.11">
+    <runtime name="PHP" version="8.2.30" url="https://www.php.net/"/>
+    <driver name="xdebug" version="3.5.0"/>
+  </build>
+  <project source="/var/www/src">
+    <tests>
+      <test name="App\Tests\Controller\ChurchControllerTest::testIndex" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\ChurchControllerTest::testNew" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\ChurchControllerTest::testEdit" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\ChurchControllerTest::testDeleteSimple" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\ChurchControllerTest::testDeleteCascade" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\MemberControllerTest::testIndexRendersPagination" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\MemberControllerTest::testNewMemberSubmission" size="unknown" status="success"/>
+      <test name="App\Tests\Controller\MemberControllerTest::testInvalidCpfSubmissionFails" size="unknown" status="success"/>
+      <test name="App\Tests\Entity\ChurchTest::testChurchCanAddMember" size="unknown" status="success"/>
+      <test name="App\Tests\Repository\ChurchRepositoryTest::testSaveAndFindByNameAndCount" size="unknown" status="success"/>
+      <test name="App\Tests\Repository\ChurchRepositoryTest::testFindByAddressCityAndPaginationQuery" size="unknown" status="success"/>
+      <test name="App\Tests\Repository\MemberRepositoryTest::testFindByNameAndByCpfAndEmail" size="unknown" status="success"/>
+      <test name="App\Tests\Service\ChurchServiceExtraTest::testDeleteWithActionDoesNotTransferWhenTargetHasSameId" size="unknown" status="success"/>
+      <test name="App\Tests\Service\ChurchServiceExtraTest::testDeleteWithActionReturnsTransferMessage" size="unknown" status="success"/>
+      <test name="App\Tests\Service\ChurchServiceTest::testHandleImageUploadSetsImage" size="unknown" status="success"/>
+      <test name="App\Tests\Service\ChurchServiceTest::testDeleteWithActionCascadeRemovesMembersAndChurch" size="unknown" status="success"/>
+      <test name="App\Tests\Service\ChurchServiceTest::testDeleteWithActionTransfersMembersWhenTargetExists" size="unknown" status="success"/>
+      <test name="App\Tests\Service\FileUploaderExtraTest::testGetTargetDirectoryIsAccessible" size="unknown" status="success"/>
+      <test name="App\Tests\Service\FileUploaderExtraTest::testUploadCreatesDirectoryIfNotExists" size="unknown" status="success"/>
+      <test name="App\Tests\Service\FileUploaderTest::testUploadMovesFileAndReturnsFilename" size="unknown" status="success"/>
+      <test name="App\Tests\Service\MemberServiceTest::testSavePersistsAndFlushes" size="unknown" status="success"/>
+      <test name="App\Tests\Service\MemberServiceTest::testRemoveDeletesAndFlushes" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorExtraTest::testShortCpfAddsSingleViolation" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorExtraTest::testInvalidChecksumAddsSingleViolation" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateValidCpf#0" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateValidCpf#1" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateValidCpf#2" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateValidCpf#3" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateInvalidCpf#0" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateInvalidCpf#1" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateInvalidCpf#2" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testValidateInvalidCpf#3" size="unknown" status="success"/>
+      <test name="App\Tests\Validator\CpfValidatorTest::testIgnoreNullOrEmpty" size="unknown" status="success"/>
+    </tests>
+    <directory name="/">
+      <totals>
+        <lines total="1120" comments="36" code="1084" executable="358" executed="257" percent="71.79"/>
+        <methods count="78" tested="51" percent="65.38"/>
+        <functions count="0" tested="0" percent="0"/>
+        <classes count="12" tested="4" percent="33.33"/>
+        <traits count="0" tested="0" percent="0"/>
+      </totals>
+      <directory name="Controller">
+        <totals>
+          <lines total="232" comments="0" code="232" executable="94" executed="59" percent="62.77"/>
+          <methods count="10" tested="2" percent="20.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="2" tested="0" percent="0.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="ChurchController.php" href="Controller/ChurchController.php.xml">
+          <totals>
+            <lines total="118" comments="0" code="118" executable="48" executed="40" percent="83.33"/>
+            <methods count="5" tested="1" percent="20.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="MemberController.php" href="Controller/MemberController.php.xml">
+          <totals>
+            <lines total="114" comments="0" code="114" executable="46" executed="19" percent="41.30"/>
+            <methods count="5" tested="1" percent="20.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <directory name="Entity">
+        <totals>
+          <lines total="335" comments="6" code="329" executable="53" executed="43" percent="81.13"/>
+          <methods count="35" tested="29" percent="82.86"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="2" tested="1" percent="50.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="Church.php" href="Entity/Church.php.xml">
+          <totals>
+            <lines total="153" comments="6" code="147" executable="25" executed="15" percent="60.00"/>
+            <methods count="16" tested="10" percent="62.50"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="Member.php" href="Entity/Member.php.xml">
+          <totals>
+            <lines total="182" comments="0" code="182" executable="28" executed="28" percent="100.00"/>
+            <methods count="19" tested="19" percent="100.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="1" percent="100.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <directory name="Form">
+        <totals>
+          <lines total="120" comments="0" code="120" executable="69" executed="69" percent="100.00"/>
+          <methods count="4" tested="4" percent="100.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="2" tested="2" percent="100.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="ChurchType.php" href="Form/ChurchType.php.xml">
+          <totals>
+            <lines total="56" comments="0" code="56" executable="31" executed="31" percent="100.00"/>
+            <methods count="2" tested="2" percent="100.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="1" percent="100.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="MemberType.php" href="Form/MemberType.php.xml">
+          <totals>
+            <lines total="64" comments="0" code="64" executable="38" executed="38" percent="100.00"/>
+            <methods count="2" tested="2" percent="100.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="1" percent="100.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <directory name="Repository">
+        <totals>
+          <lines total="216" comments="30" code="186" executable="83" executed="31" percent="37.35"/>
+          <methods count="18" tested="8" percent="44.44"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="2" tested="0" percent="0.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="ChurchRepository.php" href="Repository/ChurchRepository.php.xml">
+          <totals>
+            <lines total="105" comments="15" code="90" executable="37" executed="25" percent="67.57"/>
+            <methods count="9" tested="6" percent="66.67"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="MemberRepository.php" href="Repository/MemberRepository.php.xml">
+          <totals>
+            <lines total="111" comments="15" code="96" executable="46" executed="6" percent="13.04"/>
+            <methods count="9" tested="2" percent="22.22"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <directory name="Service">
+        <totals>
+          <lines total="141" comments="0" code="141" executable="40" executed="37" percent="92.50"/>
+          <methods count="10" tested="8" percent="80.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="3" tested="1" percent="33.33"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="ChurchService.php" href="Service/ChurchService.php.xml">
+          <totals>
+            <lines total="69" comments="0" code="69" executable="23" executed="22" percent="95.65"/>
+            <methods count="4" tested="3" percent="75.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="FileUploader.php" href="Service/FileUploader.php.xml">
+          <totals>
+            <lines total="43" comments="0" code="43" executable="12" executed="10" percent="83.33"/>
+            <methods count="3" tested="2" percent="66.67"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="MemberService.php" href="Service/MemberService.php.xml">
+          <totals>
+            <lines total="29" comments="0" code="29" executable="5" executed="5" percent="100.00"/>
+            <methods count="3" tested="3" percent="100.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="1" percent="100.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <directory name="Validator">
+        <totals>
+          <lines total="62" comments="0" code="62" executable="19" executed="18" percent="94.74"/>
+          <methods count="1" tested="0" percent="0.00"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="1" tested="0" percent="0.00"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+        <file name="Cpf.php" href="Validator/Cpf.php.xml">
+          <totals>
+            <lines total="14" comments="0" code="14" executable="0" executed="0" percent="0"/>
+            <methods count="0" tested="0" percent="0"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="0" tested="0" percent="0"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+        <file name="CpfValidator.php" href="Validator/CpfValidator.php.xml">
+          <totals>
+            <lines total="48" comments="0" code="48" executable="19" executed="18" percent="94.74"/>
+            <methods count="1" tested="0" percent="0.00"/>
+            <functions count="0" tested="0" percent="0"/>
+            <classes count="1" tested="0" percent="0.00"/>
+            <traits count="0" tested="0" percent="0"/>
+          </totals>
+        </file>
+      </directory>
+      <file name="Kernel.php" href="Kernel.php.xml">
+        <totals>
+          <lines total="14" comments="0" code="14" executable="0" executed="0" percent="0"/>
+          <methods count="0" tested="0" percent="0"/>
+          <functions count="0" tested="0" percent="0"/>
+          <classes count="0" tested="0" percent="0"/>
+          <traits count="0" tested="0" percent="0"/>
+        </totals>
+      </file>
+    </directory>
+  </project>
+</phpunit>
